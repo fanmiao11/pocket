@@ -1,16 +1,22 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
+    <img src="../../assets/logo.595745bd.png" class="login-img" />
 
-      <img src="../../assets/logo.595745bd.png" class="login-img">
-
-      <el-form-item prop="username">
+      <el-form-item prop="loginName">
         <span class="el-icon-mobile-phone" />
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="loginName"
+          v-model="loginForm.loginName"
+          placeholder="loginName"
+          name="loginName"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -29,16 +35,18 @@
           placeholder="Password"
           name="password"
           tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
 
       <el-form-item prop="code" class="code">
-        <span class="el-icon-folder-checked" style="padding-top: 16px" />
+        <span class="svg-container">
+          <svg-icon icon-class="yanzhengma" />
+        </span>
         <el-input
           ref="code"
           v-model="loginForm.code"
@@ -46,100 +54,97 @@
           name="code"
           type="text"
           tabindex="3"
-          auto-complete="on"
+          @keyup.enter.native="handleLogin"
         />
-        <div class="code-img">
-          <img src="../../assets/kVEe1AUkqlRZ1PggTCKDEGjyuwY22p6e.jpeg">
+        <div class="code-img" @click="getCodePic()">
+          <img :src="codeImg" />
         </div>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登陆</el-button>
-
+      <el-button
+        :loading="loading"
+        type="primary"
+        class="login-btn"
+        @click.native.prevent="handleLogin"
+        >登陆</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
+import { getCodePic} from "@/api/user";
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111',
-        code: ''
+        loginName: "admin",
+        password: "admin",
+        code: "",
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        loginName: [
+          { required: true, trigger: "blur", message: "请输入用户名" },
+          // { pattern: /^[a-zA-Z]*$/, trigger: "blur", message: "用户名不正确" },
+        ],
+        password: [{ required: true, trigger: "blur", message: "请输入密码" }],
+        code: [{ required: true, trigger: "blur", message: "请输入验证码" }],
       },
+      clientToken: Math.random(),
+      codeImg: '',
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
+      passwordType: "password",
+    };
   },
-  watch: {
-    $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
-    }
+  created() {
+    this.getCodePic();
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+          this.loading = true;
+          const data = {
+            ...this.loginForm,
+            clientToken: this.clientToken,
+            loginType: 0
+          }
+         await this.$store.dispatch("user/getToken", data)
+         this.loading = false
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
-    }
-  }
-}
+
+      });
+    },
+    // 图片验证码
+    async getCodePic() {
+      const {data} = await getCodePic(this.clientToken)
+      this.codeImg = window.URL.createObjectURL(data)
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$bg: #283443;
+$light_gray: #fff;
+$cursor: #ccc;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -150,9 +155,9 @@ $cursor: #fff;
 /* reset element-ui css */
 .login-container {
   // background: url('../../assets/background.be4fae7d.png') no-repeat;
-      background-image: url('../../assets/background.be4fae7d.png');
-    background-repeat: no-repeat;
-    background-size: cover;
+  background-image: url("../../assets/background.be4fae7d.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   .el-input {
     display: inline-block;
     height: 47px;
@@ -169,8 +174,8 @@ $cursor: #fff;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px #fff inset !important;
+        -webkit-text-fill-color: #889aa4 !important;
       }
     }
   }
@@ -187,14 +192,14 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  // background-color: $bg;
   overflow: hidden;
 
   .login-form {
@@ -222,23 +227,22 @@ $light_gray:#eee;
 
   .code {
     ::v-deep .el-form-item__content {
-   display: flex;
-
- }
-
+      display: flex;
+    }
   }
 
   .login-btn {
     width: 100%;
     height: 52px;
-    background: linear-gradient(262deg,#2e50e1,#6878f0);
-    opacity: .91;
+    background: linear-gradient(262deg, #2e50e1, #6878f0);
+    opacity: 0.91;
     border-radius: 8px;
     color: #fff;
     text-shadow: 0 7px 22px #cfcfcf;
+    margin-top: 10px;
   }
 
-  .svg-container ,
+  .svg-container,
   .el-icon-mobile-phone,
   .el-icon-folder-checked {
     padding: 6px 5px 6px 15px;
