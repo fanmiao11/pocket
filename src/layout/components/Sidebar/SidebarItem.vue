@@ -1,3 +1,12 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
+ * @Date: 2022-07-30 20:09:42
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-03 00:23:36
+-->
 <template>
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">

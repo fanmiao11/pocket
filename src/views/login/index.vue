@@ -131,8 +131,8 @@ export default {
     },
     // 图片验证码
     async getCodePic() {
-      const {data} = await getCodePic(this.clientToken)
-      this.codeImg = window.URL.createObjectURL(data)
+      const res = await getCodePic(this.clientToken)
+      this.codeImg = window.URL.createObjectURL(res)
     },
   },
 };

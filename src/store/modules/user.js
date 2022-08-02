@@ -5,35 +5,37 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-01 13:35:41
+ * @LastEditTime: 2022-08-02 23:42:09
  */
-import { login } from '@/api/user'
+import { getUserInfo, login } from '@/api/user'
 import { Message } from 'element-ui'
 import router from '@/router'
 export default {
   namespaced: true,
   state: {
-    token: ''
+    token: {},
+    userInfo: {}
   },
   mutations: {
     setToken (state, payload) {
       state.token = payload
+
+    },
+    setUserInfo (state, payload) {
+      state.userInfo = payload
     }
   },
   actions: {
     async getToken ({ commit }, payload) {
-      const { data } = await login(payload)
-      if (data.success) {
-        commit('setToken', data.token)
+      const data = await login(payload)
+      commit('setToken', data)
         router.push({ path: '/dashboard' })
-        Message(data.msg)
-      } else {
-        Message(data.msg)
-      }
-
-
-
-
+      Message('登陆成功')
+    },
+    async getUserInfo ({ commit, state }, payload) {
+      console.log(state.token.userId);
+      const userInfo = await getUserInfo(state.token.userId)
+      commit('setUserInfo', userInfo)
     }
   },
   getters: {

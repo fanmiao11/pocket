@@ -1,13 +1,27 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
+ * @Date: 2022-07-30 20:09:42
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-02 20:57:34
+-->
 <template>
-  <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+  <div class="app-wrapper">
+    <!-- <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" /> -->
+     <!-- <div :class="{'fixed-header':fixedHeader}">
+
+      </div>
     <sidebar class="sidebar-container" />
     <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
-        <navbar />
-      </div>
       <app-main />
-    </div>
+    </div> -->
+      <navbar />
+       <sidebar class="sidebar-container" />
+        <div class="main-container" style="backgroundColor: #FFF">
+           <app-main />
+       </div> -->
   </div>
 </template>
 
