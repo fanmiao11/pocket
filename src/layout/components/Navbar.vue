@@ -8,14 +8,14 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="userInfo.image" class="user-avatar">
+          <img :src="userInfo.image? userInfo.image : defaultImg " class="user-avatar" v-imgError='defaultImg'>
           <span style="margin: 0 15px 0 10px">欢迎您，{{userInfo.userName}}</span>
           <span>退出</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -27,8 +27,13 @@
 import { mapGetters, mapState } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import defaultImg from '@/assets/logo.595745bd.png'
 export default {
+  data(){
+    return {
+      defaultImg
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger

@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-01 13:04:10
+ * @LastEditTime: 2022-08-03 14:26:10
  */
 import Vue from 'vue'
 
@@ -24,6 +24,7 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import * as directive from '@/Directives'
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -43,6 +44,10 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+for (let k in directive) {
+  Vue.directive(k, directive[k])
+}
 
 new Vue({
   el: '#app',
