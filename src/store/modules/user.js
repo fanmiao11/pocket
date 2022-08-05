@@ -5,10 +5,11 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-02 23:42:09
+ * @LastEditTime: 2022-08-03 21:03:58
  */
 import { getUserInfo, login } from '@/api/user'
 import { Message } from 'element-ui'
+import { setTokenTime } from '@/utils/auth'
 import router from '@/router'
 export default {
   namespaced: true,
@@ -29,6 +30,7 @@ export default {
     async getToken ({ commit }, payload) {
       const data = await login(payload)
       commit('setToken', data)
+      setTokenTime()
         router.push({ path: '/dashboard' })
       Message('登陆成功')
     },
@@ -36,6 +38,10 @@ export default {
       console.log(state.token.userId);
       const userInfo = await getUserInfo(state.token.userId)
       commit('setUserInfo', userInfo)
+    },
+    logout ({ commit }) {
+      commit('setToken', {})
+      commit('setUserInfo', {})
     }
   },
   getters: {

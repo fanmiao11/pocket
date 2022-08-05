@@ -12,7 +12,6 @@ import Layout from '@/layout'
 export default {
   path: '/tactical',
   component: Layout,
-  name: 'device',
   meta: { title: '设备管理', icon: 'el-icon-s-help' },
   children: [
     {

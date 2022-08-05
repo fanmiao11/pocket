@@ -16,20 +16,20 @@ export default {
   meta: { title: '人员管理', icon: 'el-icon-s-help' },
   children: [
     {
-      path: 'area',
-      name: ' Area',
+      path: 'personList',
+      name: ' personList',
       component: () => import('@/views/personnel/personList'),
       meta: { title: '人员列表', icon: 'table' }
     },
     {
-      path: 'point',
-      name: 'Point',
+      path: 'peopleCounting',
+      name: 'peopleCounting',
       component: () => import('@/views/personnel/peopleCounting'),
       meta: { title: '人效统计', icon: 'tree' }
     },
     {
-      path: 'partner',
-      name: 'Partner',
+      path: 'workList',
+      name: 'workList',
       component: () => import('@/views/personnel/workList'),
       meta: { title: '工作量列表', icon: 'tree' }
     }

@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-02 23:57:43
+ * @LastEditTime: 2022-08-04 12:14:04
 -->
 <template>
   <section class="app-main">
@@ -33,7 +33,7 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
-   margin-top: 60px
+   padding-top: 45px;
 }
 .fixed-header+.app-main {
   padding-top: 50px;
