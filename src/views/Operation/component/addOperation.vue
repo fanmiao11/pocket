@@ -8,11 +8,10 @@
  * @LastEditTime: 2022-08-04 14:45:42
 -->
 <template>
-    <el-dialog
-    class="dialog"
-    title="新增工单"
-    :visible.sync="addOpreation"
-    :before-close="handleClose"
+    <my-dialog
+    dialogTitle="新增工单"
+    :dialogVisible="addOpreation"
+    @close="handleClose"
   >
    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
   <el-form-item label="设备编号" prop="number" >
@@ -39,10 +38,11 @@
     <el-button >确认</el-button>
   </el-form-item>
 </el-form>
-  </el-dialog>
+  </my-dialog>
 </template>
 
 <script>
+import MyDialog from '@/components/Dialog.vue'
 export default {
   data() {
     return {
@@ -78,6 +78,9 @@ export default {
     handleClose(){
       this.$emit('close');
     }
+  },
+  components:{
+    MyDialog
   }
 }
 </script>

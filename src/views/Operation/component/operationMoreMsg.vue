@@ -5,14 +5,13 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-04 13:00:53
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 20:08:51
+ * @LastEditTime: 2022-08-06 20:52:29
 -->
 <template>
-  <el-dialog
-    class="dialog"
-    title="工单详情"
-    :visible.sync="operationMoreMsg"
-    :before-close="handleClose"
+  <my-dialog
+    dialogTitle="工单详情"
+    :dialogVisible="operationMoreMsg"
+    @close="handleClose"
   >
     <div class="task-status">
       <img src="../../../assets/下载 (1).png" style="margin: 0 16px 0 22px" />
@@ -57,10 +56,11 @@
       <my-buttom bcColor="lightsalmon">重新创建</my-buttom>
     </div>
 
-  </el-dialog>
+  </my-dialog>
 </template>
 
 <script>
+import MyDialog from '@/components/Dialog.vue'
 import MyButtom from '@/components/Button.vue'
 export default {
   data(){
@@ -84,7 +84,8 @@ export default {
     },
   },
   components:{
-    MyButtom
+    MyButtom,
+    MyDialog
   }
 };
 </script>

@@ -5,13 +5,13 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-06 20:07:48
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 20:21:50
+ * @LastEditTime: 2022-08-06 20:53:43
 -->
 <template>
      <el-dialog
     class="dialog"
     :title="dialogTitle"
-    :visible.sync="dialogVisible"
+    :visible="dialogVisible"
     @close="handleClose"
   >
   <slot></slot>
@@ -31,7 +31,9 @@ export default {
    }
  },
  methods:{
-  handleClose(){}
+  handleClose(){
+    this.$emit('close');
+  }
  }
 }
 </script>
