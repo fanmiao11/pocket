@@ -16,10 +16,6 @@
       <el-form-item :label="nameTwo+':'" v-if="Two">
         <el-select v-model.trim="taskStatus" placeholder="请选择">
           <el-option :label="item" :value="++index" v-for="(item, index) in optionArr" :key="index"></el-option>
-          <!-- <el-option label="代办" value="1"></el-option>
-          <el-option label="进行" value="2"></el-option>
-          <el-option label="取消" value="3"></el-option>
-          <el-option label="完成" value="4"></el-option> -->
         </el-select>
       </el-form-item>
       <el-form-item>

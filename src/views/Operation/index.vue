@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 01:06:23
+ * @LastEditTime: 2022-08-06 20:26:06
 -->
 <template>
   <div class="app-main">
@@ -69,7 +69,8 @@
       @addOpreation="addOpreation=true"
       @operationMoreMsgBtn="operationMoreMsgBtn"
       :tableArr="tableArr"
-
+      @upPage="upPage"
+      @nextPage="nextPage"
       ></result-list>
 
       <!-- 新增工单弹层 -->
@@ -119,19 +120,15 @@ export default {
     async operationSearch(data){
        const res = await operationSearch(data)
        console.log(res);
-      //  this.tableData=[...this.tableData,...res.currentPageRecords]
-      //  this.tableData.forEach((item,index) => item.index=index+1)
-      this.tableData = res.currentPageRecords
        this.pageIndex=res.pageIndex
+       res.currentPageRecords.forEach((item,index) => item.id =(this.pageIndex -1) *10 + index + 1)
+       this.tableData = res.currentPageRecords
+       console.log(this.tableData);
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
     },
     // 点击上一页
     upPage(){
-      if(this.pageIndex === '1') {
-        this.$refs.upBtn.disabled = true;
-        return
-      }
       this.operationSearch({
         pageIndex: --this.pageIndex,
         pageSize: 10,
@@ -140,10 +137,7 @@ export default {
     },
     // 点击下一页
     nextPage(){
-      if(this.pageIndex >= this.totalPage){
-        this.$refs.nextBtn.disabled = true;
-         return
-      }
+
        this.operationSearch({
         pageIndex: ++this.pageIndex,
         pageSize: 10,

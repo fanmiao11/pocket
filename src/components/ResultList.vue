@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-05 23:06:21
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 01:29:35
+ * @LastEditTime: 2022-08-06 20:05:46
 -->
 <template>
    <div class="result">
@@ -16,7 +16,7 @@
 
         <div class="result-list">
           <el-table :data="tableData" style="width: 100%" row-key="String" ref="table">
-            <el-table-column type="index" label="序号" ></el-table-column>
+            <el-table-column prop="id" label="序号"></el-table-column>
             <el-table-column :prop="item.prop" :label="item.label" v-for="(item,index) in tableArr" :key="index" :formatter="formatter"></el-table-column>
             <!-- <el-table-column prop="taskCode" label="工单编号" >
             </el-table-column>
@@ -37,18 +37,18 @@
       <template slot-scope="scope">
         <el-button type="text" @click="handleClick(scope.row)">详情查看</el-button>
       </template>
-    </el-table-column>
+            </el-table-column>
           </el-table>
 
           <!-- 分页 -->
-          <!-- <my-pagination v-bind="$attrs" class="pagination"></my-pagination> -->
-          <el-pagination layout="slot" size="10" class="pagination">
+          <my-pagination v-bind="$attrs" v-on="$listeners"></my-pagination>
+          <!-- <el-pagination layout="slot" size="10" class="pagination">
             <slot>
               <span>共{{totalCount}}条记录 第{{pageIndex}}/{{totalPage}}页</span>
             </slot>
               <el-button class="pageBtn" @click="upPage" ref="upBtn">上一页</el-button>
                 <el-button class="pageBtn" @click="nextPage" ref="nextBtn">下一页</el-button>
-          </el-pagination>
+          </el-pagination> -->
         </div>
       </div>
 </template>
@@ -66,18 +66,6 @@ export default {
    tableData:{
     type: Array,
     default: [],
-   },
-   totalCount:{
-    type: [Number,String],
-    default:''
-   },
-   totalPage:{
-    type: [Number,String],
-    default:''
-   },
-   pageIndex:{
-     type: [Number,String],
-    default:''
    }
   },
  components:{
@@ -89,7 +77,7 @@ export default {
     //  console.log(cellValue);
     //  console.log(column);
      if(column.label === '创建日期'){
-      return  dayjs(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
+      return  dayjs(row.updateTime).format('YYYY.MM.DD HH:mm:ss')
      }else if(column.label === '工单方式'){
       return row.createType ? '手动':'自动'
      }else {

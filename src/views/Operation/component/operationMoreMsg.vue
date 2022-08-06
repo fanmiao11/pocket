@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-04 13:00:53
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 01:02:08
+ * @LastEditTime: 2022-08-06 20:08:51
 -->
 <template>
   <el-dialog
@@ -30,7 +30,7 @@
             <span>{{ moreTask.createTime}}</span>
           </el-form-item>
           <el-form-item label="工单类型:">
-            <span>{{moreTask.taskType.typeName}}</span>
+            <span>{{moreTask.taskType&&moreTask.taskType.typeName}}</span>
           </el-form-item>
           <el-form-item label="工单方式:">
             <span>{{moreTask.createType? '手动' : '自动'}}</span>
@@ -75,7 +75,7 @@ export default {
     },
     moreTask:{
       type: Object,
-      default: ()=>{return {} }
+      default: ()=>{ return {} }
     }
   },
   methods: {
