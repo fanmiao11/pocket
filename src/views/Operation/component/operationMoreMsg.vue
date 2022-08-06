@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-04 13:00:53
  * @LastEditors: sj
- * @LastEditTime: 2022-08-04 14:01:30
+ * @LastEditTime: 2022-08-06 01:02:08
 -->
 <template>
   <el-dialog
@@ -24,24 +24,24 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="设备编号:">
-            <span>01000023</span>
+            <span>{{moreTask.innerCode}}</span>
           </el-form-item>
           <el-form-item label="取消日期:">
-            <span>2034-88-588</span>
+            <span>{{ moreTask.createTime}}</span>
           </el-form-item>
           <el-form-item label="工单类型:">
-            <span>2补货工单</span>
+            <span>{{moreTask.taskType.typeName}}</span>
           </el-form-item>
           <el-form-item label="工单方式:">
-            <span>手动</span>
+            <span>{{moreTask.createType? '手动' : '自动'}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="创建日期:">
-            <span>01000023</span>
+            <span>{{moreTask.updateTime}}</span>
           </el-form-item>
           <el-form-item label="运营人员:">
-            <span>张三</span>
+            <span>{{moreTask.userName}}</span>
           </el-form-item>
           <el-form-item label="补货数量:">
             <span>补货详情</span>
@@ -54,13 +54,14 @@
     </el-form>
 
     <div class="dialog-footer">
-       <el-button class="typeBtn">重新创建</el-button>
+      <my-buttom bcColor="lightsalmon">重新创建</my-buttom>
     </div>
 
   </el-dialog>
 </template>
 
 <script>
+import MyButtom from '@/components/Button.vue'
 export default {
   data(){
     return {
@@ -72,12 +73,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    moreTask:{
+      type: Object,
+      default: ()=>{return {} }
+    }
   },
   methods: {
     handleClose(done) {
       this.$emit('close');
     },
   },
+  components:{
+    MyButtom
+  }
 };
 </script>
 
@@ -116,15 +124,6 @@ export default {
     width: 100%;
     display: flex;
     justify-content: center;
-     .typeBtn {
-      width: 80px !important;
-      height: 36px;
-      padding: 0;
-      background-color: #fbf4f0 !important;
-      border: none;
-      color: #655b56 !important;
-      margin: 0 auto;
-    }
   }
 
 }

@@ -5,43 +5,24 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-04 18:10:27
+ * @LastEditTime: 2022-08-06 01:06:23
 -->
 <template>
   <div class="app-main">
     <div class="opeartion">
       <!--  搜索栏 -->
-      <div class="search">
-        <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="工单编号：">
-            <el-input v-model="taskCode" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="工单状态">
-            <el-select v-model="taskStatus" placeholder="请选择">
-              <el-option label="代办" value="1"></el-option>
-              <el-option label="进行" value="2"></el-option>
-              <el-option label="取消" value="3"></el-option>
-              <el-option label="完成" value="4"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="searchBtn"
-              >查询</el-button
-            >
-          </el-form-item>
-        </el-form>
-      </div>
+      <my-search
+      nameOne="工单编号"
+      nameTwo="工单状态"
+      :optionArr="optionArr"
+      :Two="true"
+      @search="searchBtn"></my-search>
 
       <!-- 结果列表 -->
-      <div class="result">
+      <!-- <div class="result">
         <div class="operation-btn">
-          <el-button
-            icon="el-icon-circle-plus-outline"
-            class="addNewBtn"
-            @click="addOpreation = true"
-            >新建</el-button
-          >
-          <el-button class="typeBtn">工单配置</el-button>
+          <my-buttom bcColor="orange" icon="el-icon-circle-plus-outline"  @click.native="addOpreation = true">新建</my-buttom>
+          <my-buttom bcColor="lightsalmon">工单配置</my-buttom>
         </div>
 
         <div class="result-list">
@@ -64,13 +45,13 @@
       prop="taskId"
     >
       <template >
-        <el-button type="text" @click="operationMoreMsgBtn(tableData.taskId)">详情查看</el-button>
+        <el-button type="text" @click="operationMoreMsgBtn()">详情查看</el-button>
       </template>
     </el-table-column>
-          </el-table>
+          </el-table> -->
 
           <!-- 分页 -->
-          <el-pagination layout="slot" :total="50" size="10" class="pagination">
+          <!-- <el-pagination layout="slot" size="10" class="pagination">
             <slot>
               <span>共{{totalCount}}条记录 第{{pageIndex}}/{{totalPage}}页</span>
             </slot>
@@ -78,20 +59,32 @@
                 <el-button class="pageBtn" @click="nextPage" ref="nextBtn">下一页</el-button>
           </el-pagination>
         </div>
-      </div>
+      </div> -->
 
+      <result-list
+      :tableData="tableData"
+      :totalPage="totalPage"
+      :totalCount="totalCount"
+      :pageIndex="pageIndex"
+      @addOpreation="addOpreation=true"
+      @operationMoreMsgBtn="operationMoreMsgBtn"
+      :tableArr="tableArr"
+
+      ></result-list>
 
       <!-- 新增工单弹层 -->
-      <addOpreation :addOpreation="addOpreation" @close="addOpreation=false"></addOpreation>
+      <addOpreation :addOpreation="addOpreation" @close="addOpreation=false" ></addOpreation>
       <!--  工单详情弹出层 -->
-      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false"></operationMoreMsg>
+      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false" :moreTask="moreTask"></operationMoreMsg>
     </div>
   </div>
 </template>
 
 <script>
-import dayjs from 'dayjs'
-import {operationSearch} from '@/api/operation'
+import ResultList from '@/components/ResultList.vue'
+import MySearch from '@/components/Search.vue'
+import MyButtom from '@/components/Button.vue'
+import {operationSearch, getMoreTask} from '@/api/operation'
 import operationMoreMsg from './component/operationMoreMsg.vue'
 import addOpreation from './component/addOperation.vue'
 export default {
@@ -99,31 +92,36 @@ export default {
     return {
       operationMoreMsg: false,
       addOpreation: false,
-      taskCode:'',
-      taskStatus: '',
       tableData: [],
       pageIndex: '',
       totalPage: '',
       totalCount: '',
-      taskId:'',
-      num: 1
+      optionArr:["代办","进行","取消","完成"],
+      tableArr:[
+        {prop: 'taskCode',label:'工单编号'},
+        {prop: 'innerCode',label:'设配编号'},
+        {prop: 'taskType.typeName',label:'工单类型'},
+        {prop: 'createType',label:'工单方式'},
+        {prop: 'taskStatusTypeEntity.statusName',label:'工单状态'},
+        {prop: 'userName',label:'运营人员'},
+        {prop: 'createTime',label:'创建日期'}
+      ],
+      moreTask:{},//工单详情
     };
   },
   created(){
     this.operationSearch()
   },
   methods: {
-    searchBtn() {
-      if(this.taskCode===''&&this.taskStatus==='') return this.$message('查询不能为空')
-      this.operationSearch({
-        taskCode: this.taskCode,
-        status: this.taskStatus
-      })
+    searchBtn(taskCode,status) {
+      this.operationSearch({taskCode,status})
     },
     async operationSearch(data){
        const res = await operationSearch(data)
        console.log(res);
-       this.tableData=res.currentPageRecords
+      //  this.tableData=[...this.tableData,...res.currentPageRecords]
+      //  this.tableData.forEach((item,index) => item.index=index+1)
+      this.tableData = res.currentPageRecords
        this.pageIndex=res.pageIndex
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
@@ -152,26 +150,22 @@ export default {
         isRepair: false
       })
     },
-    // 查看详情
-    operationMoreMsgBtn(id){
-      console.log(id);
-      this.formatter()
+    // 查看工单详情
+    async operationMoreMsgBtn(taskId){
+       const res = await getMoreTask(taskId);
+       console.log(res);
+       this.moreTask=res
        this.operationMoreMsg = true
     },
-    // 时间格式化
-    formatterDate(row, column){
-      return  dayjs(column.updateTime).format('YYYY-MM-DD HH:mm:ss')
-    },
-    // 工单方式处理
-    formatterType(row, column){
-      return column.createType ? '手动':'自动'
-    }
-      },
+  },
   components:{
     operationMoreMsg,
-    addOpreation
+    addOpreation,
+    MyButtom,
+    MySearch,
+    ResultList
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -194,23 +188,6 @@ export default {
 
     .operation-btn {
       margin-bottom: 20px;
-    }
-    .addNewBtn {
-      width: 80px !important;
-      height: 36px;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
-      border: none;
-      color: #fff;
-    }
-
-    .typeBtn {
-      width: 80px !important;
-      height: 36px;
-      padding: 0;
-      background-color: #fbf4f0 !important;
-      border: none;
-      color: #655b56 !important;
     }
     ::v-deep .el-table th.is-leaf {
           line-height: 1.15;
