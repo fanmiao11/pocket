@@ -10,13 +10,13 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/statistics',
+  path: "/report",
   component: Layout,
   children: [
     {
-      path: '',
-      component: () => import('@/views/statistics'),
-      meta: { title: '统计对账', icon: 'table' }
-    }
-  ]
-}
+      path: "index",
+      component: () => import("@/views/statistics"),
+      meta: { title: "统计对账", icon: "report" },
+    },
+  ],
+};

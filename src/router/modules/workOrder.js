@@ -10,23 +10,23 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/workorder',
+  path: "/task",
   component: Layout,
-  redirect: '/workorder/operation',
-  name: 'workOrder',
-  meta: { title: '工单管理', icon: 'el-icon-s-help' },
+  redirect: "/task/business",
+  name: "Task",
+  meta: { title: "工单管理", icon: "task" },
   children: [
     {
-      path: 'operation',
-      name: 'Operation',
-      component: () => import('@/views/Operation'),
-      meta: { title: '运营工单', icon: 'table' }
+      path: "business",
+      name: "Business",
+      component: () => import("@/views/Operation"),
+      meta: { title: "运营工单" },
     },
     {
-      path: 'maintenance',
-      name: 'Maintenance',
-      component: () => import('@/views/Maintenance'),
-      meta: { title: '运维工单', icon: 'tree' }
-    }
-  ]
-}
+      path: "operation",
+      name: "Operation",
+      component: () => import("@/views/Maintenance"),
+      meta: { title: "运维工单"},
+    },
+  ],
+};

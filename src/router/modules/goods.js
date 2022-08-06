@@ -11,23 +11,23 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/goods',
+  path: "/sku",
   component: Layout,
-  redirect: '/goods/operation',
-  name: 'goods',
-  meta: { title: '商品管理', icon: 'el-icon-s-help' },
+  redirect: "/sku/sku-class",
+  name: "goods",
+  meta: { title: "商品管理", icon: "goods" },
   children: [
     {
-      path: 'goodsType',
-      name: 'GoodsType',
-      component: () => import('@/views/Goods/goodsType'),
-      meta: { title: '商品类型', icon: 'table' }
+      path: "sku-class",
+      name: "SkuClass",
+      component: () => import("@/views/Goods/goodsType"),
+      meta: { title: "商品类型" },
     },
     {
-      path: 'goodsControl',
-      name: 'GoodsControl',
-      component: () => import('@/views/Goods/goodsControl'),
-      meta: { title: '商品管理', icon: 'tree' }
-    }
-  ]
-}
+      path: "sku",
+      name: "Sku",
+      component: () => import("@/views/Goods/goodsControl"),
+      meta: { title: "商品管理"},
+    },
+  ],
+};

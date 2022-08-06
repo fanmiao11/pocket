@@ -10,14 +10,14 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/tactical',
+  path: "/policy",
   component: Layout,
-  meta: { title: '设备管理', icon: 'el-icon-s-help' },
+  // meta: { title: "设备管理", icon: "el-icon-s-help" },
   children: [
     {
-      path: '',
-      component: () => import('@/views/tactical'),
-      meta: { title: '策略管理', icon: 'table' }
-    }
-  ]
-}
+      path: "index",
+      component: () => import("@/views/tactical"),
+      meta: { title: "策略管理", icon: "policy" },
+    },
+  ],
+};

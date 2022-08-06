@@ -9,29 +9,29 @@
  */
 import Layout from '@/layout'
 export default {
-  path: '/device',
+  path: "/vm",
   component: Layout,
-  redirect: '/device/area',
-  name: 'device',
-  meta: { title: '设备管理', icon: 'el-icon-s-help' },
+  redirect: "/vm/index",
+  name: "device",
+  meta: { title: "设备管理", icon: "device" },
   children: [
     {
-      path: 'deviceManagement',
-      name: ' deviceManagement',
-      component: () => import('@/views/Device/deviceManagement'),
-      meta: { title: '设备管理', icon: 'table' }
+      path: "index",
+      name: " deviceManagement",
+      component: () => import("@/views/Device/deviceManagement"),
+      meta: { title: "设备管理" },
     },
     {
-      path: 'deviceState',
-      name: 'deviceState',
-      component: () => import('@/views/Device/deviceState'),
-      meta: { title: '设备状态', icon: 'tree' }
+      path: "status",
+      name: "Status",
+      component: () => import("@/views/Device/deviceState"),
+      meta: { title: "设备状态" },
     },
     {
-      path: 'deviceType',
-      name: 'deviceType',
-      component: () => import('@/views/Device/deviceType'),
-      meta: { title: '设备类型管理', icon: 'tree' }
-    }
-  ]
-}
+      path: "type",
+      name: "Type",
+      component: () => import("@/views/Device/deviceType"),
+      meta: { title: "设备类型管理"},
+    },
+  ],
+};

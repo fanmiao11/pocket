@@ -10,29 +10,29 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/pointLocation',
+  path: "/node",
   component: Layout,
-  redirect: '/pointLocation/area',
-  name: 'pointLocation',
-  meta: { title: '点位管理', icon: 'el-icon-s-help' },
+  redirect: "/node/region",
+  name: "Node",
+  meta: { title: "点位管理", icon: "node" },
   children: [
     {
-      path: 'area',
-      name: ' Area',
-      component: () => import('@/views/area'),
-      meta: { title: '区域管理', icon: 'table' }
+      path: "region",
+      name: "Region",
+      component: () => import("@/views/area"),
+      meta: { title: "区域管理" },
     },
     {
-      path: 'point',
-      name: 'Point',
-      component: () => import('@/views/point'),
-      meta: { title: '点位管理', icon: 'tree' }
+      path: "node",
+      name: "Point",
+      component: () => import("@/views/point"),
+      meta: { title: "点位管理"},
     },
     {
-      path: 'partner',
-      name: 'Partner',
-      component: () => import('@/views/partner'),
-      meta: { title: '合作商管理', icon: 'tree' }
-    }
-  ]
-}
+      path: "partner",
+      name: "Partner",
+      component: () => import("@/views/partner"),
+      meta: { title: "合作商管理" },
+    },
+  ],
+};

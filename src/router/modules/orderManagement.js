@@ -10,13 +10,13 @@
 
 import Layout from '@/layout'
 export default {
-  path: '/orderManagement',
+  path: '/order',
   component: Layout,
   children: [
     {
-      path: '',
+      path: 'index',
       component: () => import('@/views/orderManagement'),
-      meta: { title: '订单管理', icon: 'table' }
+      meta: { title: '订单管理', icon: 'order' }
     }
   ]
 }

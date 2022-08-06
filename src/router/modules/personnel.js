@@ -9,29 +9,29 @@
  */
 import Layout from '@/layout'
 export default {
-  path: '/personnel',
+  path: "/user",
   component: Layout,
-  redirect: '/personnel/area',
-  name: 'personnel',
-  meta: { title: '人员管理', icon: 'el-icon-s-help' },
+  redirect: "/user/index",
+  name: "User",
+  meta: { title: "人员管理", icon: "person" },
   children: [
     {
-      path: 'personList',
-      name: ' personList',
-      component: () => import('@/views/personnel/personList'),
-      meta: { title: '人员列表', icon: 'table' }
+      path: "index",
+      name: " personList",
+      component: () => import("@/views/personnel/personList"),
+      meta: { title: "人员列表"},
     },
     {
-      path: 'peopleCounting',
-      name: 'peopleCounting',
-      component: () => import('@/views/personnel/peopleCounting'),
-      meta: { title: '人效统计', icon: 'tree' }
+      path: "user-task-stats",
+      name: "UserTaskStats",
+      component: () => import("@/views/personnel/peopleCounting"),
+      meta: { title: "人效统计" },
     },
     {
-      path: 'workList',
-      name: 'workList',
-      component: () => import('@/views/personnel/workList'),
-      meta: { title: '工作量列表', icon: 'tree' }
-    }
-  ]
-}
+      path: "user-work",
+      name: "UserWork",
+      component: () => import("@/views/personnel/workList"),
+      meta: { title: "工作量列表"},
+    },
+  ],
+};
