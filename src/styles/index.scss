@@ -67,4 +67,8 @@ div:focus {
 .app-main {
   background-color: #f8fafd;
   padding: 20px;
+  min-width: 1366px;
+  min-height: 600px;
+  overflow: hidden;
+  overflow-x: auto
 }

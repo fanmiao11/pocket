@@ -93,7 +93,6 @@ export default {
       },
       clientToken: Math.random(),
       codeImg: '',
-      loading: false,
       passwordType: "password",
     };
   },
@@ -114,14 +113,14 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          this.loading = true;
+          this.$store.dispatch('settings/changeLoading',true)
           const data = {
             ...this.loginForm,
             clientToken: this.clientToken,
             loginType: 0
           }
          await this.$store.dispatch("user/getToken", data)
-         this.loading = false
+          this.$store.dispatch('settings/changeLoading',false)
         } else {
           console.log("error submit!!");
           return false;
@@ -134,6 +133,12 @@ export default {
       const res = await getCodePic(this.clientToken)
       this.codeImg = window.URL.createObjectURL(res)
     },
+  },
+    computed:{
+    loading(){
+      return this.$store.state.settings.loading
+    }
+
   },
 };
 </script>

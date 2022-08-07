@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-03 21:03:58
+ * @LastEditTime: 2022-08-07 10:00:55
  */
 import { getUserInfo, login } from '@/api/user'
 import { Message } from 'element-ui'
@@ -31,7 +31,7 @@ export default {
       const data = await login(payload)
       commit('setToken', data)
       setTokenTime()
-        router.push({ path: '/dashboard' })
+      router.push({ path: '/home' })
       Message('登陆成功')
     },
     async getUserInfo ({ commit, state }, payload) {

@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-03 21:31:00
+ * @LastEditTime: 2022-08-07 10:11:13
  */
 import axios from 'axios'
 import store from '@/store'
@@ -57,6 +57,7 @@ service.interceptors.response.use((res) => {
   if (res.config.url === '/api/user-service/user/login') {
     const { success, msg, token } = res.data
     if (success) return res.data
+    store.dispatch('settings/changeLoading', false)
     Message(msg)
     return Promise.reject(new Error(msg))
   }

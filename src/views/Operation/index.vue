@@ -3,9 +3,18 @@
  * @version:
  * @Author: suiyue
  * @email: 1373842098@qq.com
+ * @Date: 2022-08-07 10:05:58
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-07 10:05:59
+-->
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 20:45:52
+ * @LastEditTime: 2022-08-07 10:05:51
 -->
 <template>
   <div class="app-main">
@@ -66,11 +75,14 @@
       :totalPage="totalPage"
       :totalCount="totalCount"
       :pageIndex="pageIndex"
-      @addOpreation="addOpreation=true"
-      @operationMoreMsgBtn="operationMoreMsgBtn"
+      @clickAddBtn="addOpreation=true"
+      @operationBtn="operationMoreMsgBtn"
       :tableArr="tableArr"
       @upPage="upPage"
       @nextPage="nextPage"
+      :isShowSecondBtn="true"
+      secondBtnContent="工单配置"
+      :operation="operationArr"
       ></result-list>
 
       <!-- 新增工单弹层 -->
@@ -108,6 +120,9 @@ export default {
         {prop: 'createTime',label:'创建日期'}
       ],
       moreTask:{},//工单详情
+      operationArr:[ // 操作
+        {title: '查看详情', color: false},
+      ]
     };
   },
   created(){
@@ -119,11 +134,10 @@ export default {
     },
     async operationSearch(data){
        const res = await operationSearch(data)
-       console.log(res);
+      //  console.log(res);
        this.pageIndex=res.pageIndex
        res.currentPageRecords.forEach((item,index) => item.id =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
-       console.log(this.tableData);
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
     },
@@ -145,11 +159,11 @@ export default {
       })
     },
     // 查看工单详情
-    async operationMoreMsgBtn(taskId){
-       const res = await getMoreTask(taskId);
-       console.log(res);
+    async operationMoreMsgBtn(row,val){
+        const res = await getMoreTask(row.taskId);
        this.moreTask=res
        this.operationMoreMsg = true
+
     },
   },
   components:{

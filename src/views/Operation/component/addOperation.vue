@@ -3,9 +3,18 @@
  * @version:
  * @Author: suiyue
  * @email: 1373842098@qq.com
+ * @Date: 2022-08-07 10:05:20
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-07 10:05:20
+-->
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
  * @Date: 2022-08-04 14:08:21
  * @LastEditors: sj
- * @LastEditTime: 2022-08-04 14:45:42
+ * @LastEditTime: 2022-08-06 21:37:28
 -->
 <template>
     <my-dialog
@@ -22,8 +31,8 @@
       <el-option label="补货工单" value="type"></el-option>
     </el-select>
   </el-form-item>
-   <el-form-item label="补货数量" >
-    <span>补货清单</span>
+   <el-form-item label="补货数量">
+    <span >补货清单</span>
   </el-form-item>
     <el-form-item label="运营人员" prop="people">
     <el-select v-model="ruleForm.people" placeholder="请选择">
@@ -38,6 +47,7 @@
     <el-button >确认</el-button>
   </el-form-item>
 </el-form>
+
   </my-dialog>
 </template>
 
@@ -50,7 +60,7 @@ export default {
          number: '',
          type: '',
          tip: '',
-         people: '',
+         people: ''
       },
       rules:{
          number: [
@@ -85,6 +95,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>

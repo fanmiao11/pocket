@@ -3,9 +3,18 @@
  * @version:
  * @Author: suiyue
  * @email: 1373842098@qq.com
+ * @Date: 2022-08-07 10:02:49
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-07 10:02:49
+-->
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
  * @Date: 2022-08-05 23:10:34
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 14:33:06
+ * @LastEditTime: 2022-08-07 02:12:20
 -->
 <template>
    <el-pagination layout="slot" size="10" class="pagination">
@@ -20,23 +29,28 @@
 <script>
 export default {
   props:{
+    // 总共多少条记录
       totalCount:{
     type: [Number,String],
     default:''
    },
+  //  总页数
    totalPage:{
     type: [Number,String],
     default:''
    },
+  //  当前页数
    pageIndex:{
      type: [Number,String],
     default:''
    }
   },
   methods:{
+    // 点击上一页
     upPage(){
       this.$emit('upPage');
     },
+    // 点击下一页
     nextPage(){
       this.$emit('nextPage');
     }

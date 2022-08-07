@@ -3,9 +3,18 @@
  * @version:
  * @Author: suiyue
  * @email: 1373842098@qq.com
+ * @Date: 2022-08-07 10:05:38
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-07 10:05:38
+-->
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
  * @Date: 2022-08-04 13:00:53
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 20:52:29
+ * @LastEditTime: 2022-08-06 22:27:11
 -->
 <template>
   <my-dialog
@@ -43,7 +52,7 @@
             <span>{{moreTask.userName}}</span>
           </el-form-item>
           <el-form-item label="补货数量:">
-            <span>补货详情</span>
+            <span @click="isBackOrderListFn">补货详情</span>
           </el-form-item>
           <el-form-item label="取消原因:">
             <span></span>
@@ -56,16 +65,20 @@
       <my-buttom bcColor="lightsalmon">重新创建</my-buttom>
     </div>
 
+
+    <backOrderList :isBackOrderList="isBackOrderList" @close="isBackOrderList=false" :moreTask="moreTask"/>
   </my-dialog>
 </template>
 
 <script>
+import backOrderList from './backOrderList.vue'
 import MyDialog from '@/components/Dialog.vue'
 import MyButtom from '@/components/Button.vue'
 export default {
   data(){
     return {
-      formInline:{}
+      formInline:{},
+      isBackOrderList: false,
     }
   },
     props: {
@@ -82,10 +95,15 @@ export default {
     handleClose(done) {
       this.$emit('close');
     },
+    isBackOrderListFn(){
+      this.isBackOrderList=true
+
+    }
   },
   components:{
     MyButtom,
-    MyDialog
+    MyDialog,
+    backOrderList
   }
 };
 </script>
