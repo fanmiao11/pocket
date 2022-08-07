@@ -105,12 +105,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
-      default: [],
+      // default: [],
     },
       // 是否显示多选框
     selection: {
@@ -146,7 +146,7 @@ export default {
   },
   computed:{
     length(){
-      return this.operation.length===4? 200:''
+      return this.operation?.length===4? 200:''
     }
   }
 };

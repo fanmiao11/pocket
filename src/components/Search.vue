@@ -46,7 +46,7 @@ export default {
     },
     optionArr:{
       type:Array,
-      default:[]
+      // default:[]
     },
     Two:{
       type: Boolean,
