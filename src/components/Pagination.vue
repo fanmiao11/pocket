@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 10:02:49
  * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:02:49
+ * @LastEditTime: 2022-08-07 12:45:37
 -->
 <!--
  * @Descripttion:
@@ -60,7 +60,7 @@ export default {
      return this.pageIndex === '1'? true : false;
     },
      nextPageBtn(){
-     return this.pageIndex === this.totalCount? true : false;
+     return this.pageIndex === this.totalPage? true : false;
     },
   }
 }

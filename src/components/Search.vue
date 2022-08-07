@@ -5,16 +5,16 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-05 20:38:44
  * @LastEditors: sj
- * @LastEditTime: 2022-08-05 21:32:19
+ * @LastEditTime: 2022-08-07 17:48:05
 -->
 <template>
   <div class="search">
     <el-form :inline="true" class="demo-form-inline">
       <el-form-item :label="nameOne+':'">
-        <el-input v-model.trim="taskCode" placeholder="请输入"></el-input>
+        <el-input v-model.trim="taskCode" placeholder="请输入" clearable></el-input>
       </el-form-item>
       <el-form-item :label="nameTwo+':'" v-if="Two">
-        <el-select v-model.trim="taskStatus" placeholder="请选择">
+        <el-select v-model.trim="taskStatus" placeholder="请选择" clearable>
           <el-option :label="item" :value="++index" v-for="(item, index) in optionArr" :key="index"></el-option>
         </el-select>
       </el-form-item>
@@ -45,8 +45,7 @@ export default {
       type:String,
     },
     optionArr:{
-      type:Array,
-      default:[]
+      type:Array
     },
     Two:{
       type: Boolean,
@@ -58,7 +57,7 @@ export default {
   },
   methods:{
       searchBtn() {
-      if(this.taskCode===''&&this.taskStatus==='') return this.$message('查询不能为空')
+      // if(this.taskCode===''&&this.taskStatus==='') return this.$message('查询不能为空')
       this.$emit('search',this.taskCode,this.taskStatus)
     },
   }

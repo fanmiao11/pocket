@@ -115,3 +115,7 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 请求列表数据
+
+export function getTableList ()
