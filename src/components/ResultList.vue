@@ -42,12 +42,12 @@
         <!-- 多选框 -->
        <el-table-column type="selection" v-if="selection"></el-table-column>
         <!-- 序号列 -->
-        <el-table-column prop="id" label="序号"  width="80"></el-table-column>
+        <el-table-column prop="itemIndex" label="序号"  width="80"></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
+          v-for="(item, index) in tableArr"
           :prop="item.prop"
           :label="item.label"
-          v-for="(item, index) in tableArr"
           :key="index"
           :formatter="formatter"
           :show-overflow-tooltip='true'
@@ -60,7 +60,7 @@
             @click="handleClick(scope.row,item.title)"
             size="medium"
             :class="{ color: item.color }"
-            v-for="(item,index) in operation"
+            v-for="(item,index) in operation.ope"
             :key='index'
             class="operationBtn"
           >
@@ -119,7 +119,7 @@ export default {
     },
       // 操作框控制
     operation: {
-      type: Array,
+      type: Object,
     },
   },
   components: {
@@ -146,7 +146,7 @@ export default {
   },
   computed:{
     length(){
-      return this.operation?.length===4? 200:''
+      return this.operation.opeWidth ? this.operation.opeWidth : ''
     }
   }
 };
