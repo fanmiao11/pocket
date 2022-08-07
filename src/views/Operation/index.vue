@@ -120,9 +120,11 @@ export default {
         {prop: 'createTime',label:'创建日期'}
       ],
       moreTask:{},//工单详情
-      operationArr:[ // 操作
+      operationArr:{
+        ope:[ // 操作
         {title: '查看详情', color: false},
       ]
+      }
     };
   },
   created(){
@@ -136,7 +138,7 @@ export default {
        const res = await operationSearch(data)
       //  console.log(res);
        this.pageIndex=res.pageIndex
-       res.currentPageRecords.forEach((item,index) => item.Index =(this.pageIndex -1) *10 + index + 1)
+       res.currentPageRecords.forEach((item,index) => item.itemIndex =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount

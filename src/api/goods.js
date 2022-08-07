@@ -56,3 +56,19 @@ export function delskuClass(classId) {
     method: "DELETE",
   });
 }
+
+/**
+ * 获取商品数据
+ * @param {Object} params 
+ * pageIndex
+ * pageSize
+ * skuName 商品名称
+ * classId 商品类别id
+ * @returns 
+ */
+export function getskus(params){
+    return request({
+      url: "/api/vm-service/sku/search",
+      params
+    });
+}

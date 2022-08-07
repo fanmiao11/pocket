@@ -1,4 +1,5 @@
 <template>
+  <!-- 商品类型 -->
   <div class="app-main">
     <my-search nameOne="商品类型搜索" @search="searchBtn"> </my-search>
     <result-list
@@ -72,6 +73,11 @@ import {
   delskuClass,
 } from "@/api/goods";
 export default {
+    components: {
+    MySearch,
+    ResultList,
+    MyDialog,
+  },
   data() {
     const validatetype = async (rule, value, callback) => {
       let isRepeat = false;
@@ -241,11 +247,7 @@ export default {
       });
     },
   },
-  components: {
-    MySearch,
-    ResultList,
-    MyDialog,
-  },
+
 };
 </script>
 

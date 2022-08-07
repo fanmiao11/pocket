@@ -28,7 +28,12 @@
         @click.native="$emit('clickAddBtn')"
         >新建</my-buttom
       >
-      <my-buttom bcColor="lightsalmon" v-if="isShowSecondBtn" @click.native="$emit('clickSecondBtn')">{{secondBtnContent}}</my-buttom>
+      <my-buttom
+        bcColor="lightsalmon"
+        v-if="isShowSecondBtn"
+        @click.native="$emit('clickSecondBtn')"
+        >{{ secondBtnContent }}</my-buttom
+      >
     </div>
 
     <!-- 列表 -->
@@ -40,31 +45,51 @@
         ref="table"
       >
         <!-- 多选框 -->
-       <el-table-column type="selection" v-if="selection"></el-table-column>
+        <el-table-column type="selection" v-if="selection"></el-table-column>
         <!-- 序号列 -->
-        <el-table-column prop="itemIndex" label="序号"  width="80"></el-table-column>
+        <el-table-column
+          prop="itemIndex"
+          label="序号"
+          width="80"
+        ></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
           v-for="(item, index) in tableArr"
           :prop="item.prop"
           :label="item.label"
           :key="index"
-          :formatter="formatter"
-          :show-overflow-tooltip='true'
-        ></el-table-column>
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <!-- 如果是图片列表显示图片 -->
+            <template v-if="item.label === '商品图片'">
+              <img :src="scope.row.skuImage" />
+            </template>
+            <!-- 如果不是图片列表正常显示内容 -->
+            <template v-else >
+              <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/>
+              <!-- {{ scope.row[item.prop] }} -->
+            </template>
+          </template>
+        </el-table-column>
         <!-- 操作列 -->
-        <el-table-column fixed="right" label="操作" :width="length" prop="taskId">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          :width="length"
+          prop="taskId"
+        >
           <template slot-scope="scope">
             <el-button
-            type="text"
-            @click="handleClick(scope.row,item.title)"
-            size="medium"
-            :class="{ color: item.color }"
-            v-for="(item,index) in operation.ope"
-            :key='index'
-            class="operationBtn"
-          >
-              {{item.title}}</el-button
+              type="text"
+              @click="handleClick(scope.row, item.title)"
+              size="medium"
+              :class="{ color: item.color }"
+              v-for="(item, index) in operation.ope"
+              :key="index"
+              class="operationBtn"
+            >
+              {{ item.title }}</el-button
             >
           </template>
         </el-table-column>
@@ -72,7 +97,11 @@
 
       <!-- 分页 -->
       <!-- $attrs 祖孙传值  $listeners 方法-->
-      <my-pagination v-bind="$attrs" v-on="$listeners" v-if="isShowPagination"></my-pagination>
+      <my-pagination
+        v-bind="$attrs"
+        v-on="$listeners"
+        v-if="isShowPagination"
+      ></my-pagination>
     </div>
   </div>
 </template>
@@ -84,23 +113,23 @@ import dayjs from "dayjs";
 export default {
   props: {
     // 是否显示表格上方按钮
-    isShowBtn:{
+    isShowBtn: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // 是否显示第二个按钮
-     isShowSecondBtn:{
+    isShowSecondBtn: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // 第二个按钮的内容
-    secondBtnContent:{
+    secondBtnContent: {
       type: String,
-      default: '按钮'
+      default: "按钮",
     },
-    isShowPagination:{
+    isShowPagination: {
       type: Boolean,
-      default: true
+      default: true,
     },
     // 表头数据
     tableArr: {
@@ -112,12 +141,12 @@ export default {
       type: Array,
       // default: [],
     },
-      // 是否显示多选框
+    // 是否显示多选框
     selection: {
       type: Boolean,
       default: false,
     },
-      // 操作框控制
+    // 操作框控制
     operation: {
       type: Object,
     },
@@ -128,32 +157,31 @@ export default {
   },
   methods: {
     formatter(row, column, cellValue) {
-      //  console.log(cellValue);
-      //  console.log(column);
       if (column.label === "创建日期") {
-        return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
+          return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
       } else if (column.label === "工单方式") {
-        return row.createType ? "手动" : "自动";
-      } else {
+          return row.createType ? "手动" : "自动";
+      } else if(column.label === '商品价格'){
+        return Number(row.price/100)
+      }else {
         return cellValue;
       }
     },
     handleClick(row, val) {
       console.log(row);
-    // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
-      this.$emit("operationBtn", row,val);
+      // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
+      this.$emit("operationBtn", row, val);
     },
   },
-  computed:{
-    length(){
-      return this.operation.opeWidth ? this.operation.opeWidth : ''
-    }
-  }
+  computed: {
+    length() {
+      return this.operation?.opeWidth ? this.operation.opeWidth : "";
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-
 .color {
   color: red;
 }
