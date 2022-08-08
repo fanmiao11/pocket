@@ -136,7 +136,7 @@ export default {
        const res = await operationSearch(data)
       //  console.log(res);
        this.pageIndex=res.pageIndex
-       res.currentPageRecords.forEach((item,index) => item.id =(this.pageIndex -1) *10 + index + 1)
+       res.currentPageRecords.forEach((item,index) => item.itemIndex =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
