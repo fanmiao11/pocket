@@ -88,7 +88,7 @@
       <!-- 新增工单弹层 -->
       <addOpreation :addOpreation="addOpreation" @close="addOpreation=false" ></addOpreation>
       <!--  工单详情弹出层 -->
-      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false" :moreTask="moreTask"></operationMoreMsg>
+      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false" :moreTask="moreTask" @refresh='searchBtn(null,1)'></operationMoreMsg>
     </div>
   </div>
 </template>
@@ -131,12 +131,13 @@ export default {
     this.operationSearch()
   },
   methods: {
-    searchBtn(taskCode,status) {
+   async searchBtn(taskCode,status) {
+    this.status = status
       this.operationSearch({taskCode,status})
     },
+    // 获取页面所有的数据
     async operationSearch(data){
        const res = await operationSearch(data)
-      //  console.log(res);
        this.pageIndex=res.pageIndex
        res.currentPageRecords.forEach((item,index) => item.itemIndex =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
@@ -146,6 +147,7 @@ export default {
     // 点击上一页
     upPage(){
       this.operationSearch({
+        status:this.status,
         pageIndex: --this.pageIndex,
         pageSize: 10,
         isRepair: false
@@ -153,8 +155,8 @@ export default {
     },
     // 点击下一页
     nextPage(){
-
        this.operationSearch({
+         status:this.status,
         pageIndex: ++this.pageIndex,
         pageSize: 10,
         isRepair: false
@@ -162,7 +164,7 @@ export default {
     },
     // 查看工单详情
     async operationMoreMsgBtn(row,val){
-        const res = await getMoreTask(row.taskId);
+      const res = await getMoreTask(row?.taskId);
        this.moreTask=res
        this.operationMoreMsg = true
 
