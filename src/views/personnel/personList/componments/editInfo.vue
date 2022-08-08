@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 14:16:32
  * @LastEditors: sj
- * @LastEditTime: 2022-08-08 00:36:13
+ * @LastEditTime: 2022-08-08 09:58:57
 -->
 <template>
     <el-form :model="ruleForm" :rules="rules" ref="Form" label-width="100px" class="demo-ruleForm">
@@ -105,7 +105,6 @@ export default {
   this.getAreaList()
   this.ruleForm = this.userInfo
   },
-  updated(){this.ruleForm = this.userInfo},
  methods:{
   // 获取角色列表
    async getRoleList(){
@@ -182,8 +181,8 @@ export default {
       }
       return isJPG && isLt100KB;
     },
- },
 
+ }
 }
 </script>
 
