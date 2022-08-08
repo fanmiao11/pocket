@@ -98,3 +98,29 @@ export const getOrderAmount = (innerCode, start, end) => {
     },
   });
 };
+
+const formData = new FormData();
+/**
+ * 上传头像
+ * @param {Object} file
+ * @returns
+ */
+export const imgUpload = (file) => {
+  formData.append("fileName", file);
+  return request({
+    url: "/api/vm-service/sku/fileUpload",
+    method: "POST",
+    data: formData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const addVmType = (data) => {
+  return request({
+    url: "/api/vm-service/vmType",
+    method: "post",
+    data,
+  });
+};
