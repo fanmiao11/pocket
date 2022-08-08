@@ -64,7 +64,7 @@ export default {
      return this.pageIndex === '1'? true : false;
     },
      nextPageBtn(){
-     return this.pageIndex === this.totalCount? true : false;
+     return this.pageIndex === this.totalPage? true : false;
     },
   }
 }

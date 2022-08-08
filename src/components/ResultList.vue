@@ -47,7 +47,7 @@
         <!-- 多选框 -->
         <el-table-column type="selection" v-if="selection"></el-table-column>
         <!-- 序号列 -->
-        <el-table-column prop="id" label="序号"  width="80"></el-table-column>
+        <el-table-column prop="itemIndex" label="序号"  width="80"></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
           v-for="(item, index) in tableArr"
