@@ -106,6 +106,7 @@ export default {
       }
     };
     return {
+      searchText:'',
       tableArr: [{ prop: "className", label: "商品类型名称" }],
       operationArr: {
         opeWidth: "200",
@@ -139,6 +140,7 @@ export default {
   methods: {
     // 搜索
     searchBtn(val) {
+      this.searchText = val
       this.getskuClass({
         className: val,
       });
@@ -235,6 +237,7 @@ export default {
     // 点击上一页
     upPage() {
       this.getskuClass({
+        className: this.searchText,
         pageIndex: --this.pageIndex,
         pageSize: 10,
       });
@@ -242,6 +245,7 @@ export default {
     // 点击下一页
     nextPage() {
       this.getskuClass({
+        className: this.searchText,
         pageIndex: ++this.pageIndex,
         pageSize: 10,
       });
