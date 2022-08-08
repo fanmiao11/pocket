@@ -46,25 +46,14 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="商品价格(元)：" prop="price">
-          <el-input type="text" v-model="formData.price" placeholder="请输入">
-            <template slot="append">
-              <div>
-                <div>
-                  <el-button
-                    icon="el-icon-arrow-up"
-                    @click="formData.price = Number(formData.price) + 0.5"
-                  ></el-button>
-                </div>
-                <div>
-                  <el-button
-                    icon="el-icon-arrow-down"
-                    @click="formData.price = Number(formData.price) - 0.5"
-                    :disabled="formData.price <= 0.5"
-                  ></el-button>
-                </div>
-              </div>
-            </template>
-          </el-input>
+          <el-input-number
+            :style="{ width: '100%' }"
+            v-model="formData.price"
+            controls-position="right"
+            :min="0.5"
+            :step="0.5"
+            placeholder="请输入"
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="商品类型：" prop="className">
           <el-select
@@ -95,10 +84,13 @@
             action="https://jsonplaceholder.typicode.com/posts/"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+            :http-request="httpRequest"
           >
-            <!-- <img v-if="formData.skuImage" :src="formData.skuImage" class="avatar" /> -->
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img
+              v-if="formData.skuImage"
+              :src="formData.skuImage"
+              class="avatar"
+            />
             <i v-else class="avatar-uploader-icon">
               <svg-icon icon-class="upload" />
             </i>
@@ -114,8 +106,34 @@
       </el-form>
     </my-dialog>
     <!-- 导入数据 -->
+    <my-dialog
+      dialogTitle="数据导入"
+      :dialogVisible="importOpreation"
+      @close="importOpreation = false"
+    >
+      <el-form>
+        <el-upload
+          ref="fileImport"
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-success="handlefileSuccess"
+          :http-request="fileHttpRequest"
+          :auto-upload="false"
+          :limit="1"
+        >
+          <el-button>上传文件</el-button>
+          <div slot="tip" class="el-upload__tip">
+            支持扩展名：xls、xlsx，文件不得大于1M
+          </div>
+        </el-upload>
+        <el-form-item>
+          <el-button @click="cancelImportFn">取消</el-button>
+          <el-button @click="saveImportFn">确认</el-button>
+        </el-form-item>
+      </el-form>
+    </my-dialog>
     <!-- 修改 -->
- <my-dialog
+    <my-dialog
       dialogTitle="修改商品"
       :dialogVisible="editOpreation"
       @close="editOpreation = false"
@@ -140,27 +158,16 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="商品价格(元)：" prop="price">
-          <el-input type="text" v-model="formData.price" placeholder="请输入">
-            <template slot="append">
-              <div>
-                <div>
-                  <el-button
-                    icon="el-icon-arrow-up"
-                    @click="formData.price = Number(formData.price) + 0.5"
-                  ></el-button>
-                </div>
-                <div>
-                  <el-button
-                    icon="el-icon-arrow-down"
-                    @click="formData.price = Number(formData.price) - 0.5"
-                    :disabled="formData.price <= 0.5"
-                  ></el-button>
-                </div>
-              </div>
-            </template>
-          </el-input>
+          <el-input-number
+            :style="{ width: '100%' }"
+            v-model="formData.price"
+            controls-position="right"
+            :min="0"
+            :step="0.5"
+            placeholder="请输入"
+          ></el-input-number>
         </el-form-item>
-        <el-form-item label="商品类型：" prop="className">
+        <el-form-item label="商品类型：">
           <el-select
             :style="{ width: '100%' }"
             v-model="formData.classId"
@@ -189,10 +196,13 @@
             action="https://jsonplaceholder.typicode.com/posts/"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
+            :http-request="httpRequest"
           >
-            <!-- <img v-if="formData.skuImage" :src="formData.skuImage" class="avatar" /> -->
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img
+              v-if="formData.skuImage"
+              :src="formData.skuImage"
+              class="avatar"
+            />
             <i v-else class="avatar-uploader-icon">
               <svg-icon icon-class="upload" />
             </i>
@@ -214,36 +224,22 @@
 import MySearch from "@/components/Search.vue";
 import ResultList from "@/components/ResultList.vue";
 import MyDialog from "@/components/Dialog.vue";
-import { getskuClass, getskus } from "@/api/goods";
+import {
+  getskuClass,
+  getskus,
+  fileupload,
+  addskus,
+  editskus,
+  importskus,
+} from "@/api/goods";
 
 export default {
   data() {
     const validatetype = async (rule, value, callback) => {
-      // let isRepeat = false;
-      // const res = await getskuClass({ className: value });
-      // if (this.addOpreation) {
-      //   // 新增判断
-      //   if (res.totalCount !== "0") {
-      //     isRepeat = true;
-      //   }
-      // } else if (this.editOpreation) {
-      //   // 编辑判断
-      //   if (res.totalCount === "0") {
-      //     isRepeat = false;
-      //   } else {
-      //     isRepeat = res.currentPageRecords
-      //       ?.filter((item) => item.classId !== this.formData.classId)
-      //       .some((item) => item.className === value);
-      //     // console.log(isRepeat);
-      //   }
-      // }
-      // if (isRepeat) {
-      //   callback(new Error("名称重复"));
-      // } else {
-      //   callback();
-      // }
+      callback();
     };
     return {
+      searchText: "",
       tableArr: [
         { prop: "skuName", label: "商品名称" },
         { prop: "skuImage", label: "商品图片" },
@@ -266,17 +262,38 @@ export default {
       totalCount: "",
       addOpreation: false,
       editOpreation: false,
+      importOpreation: false,
       formData: {
         skuName: "",
         brandName: "",
-        price: "",
+        price: undefined,
         classId: "",
         unit: "",
         skuImage: "",
+        skuId: "",
       },
-      skuId: "",
       rules: {
-        className: [
+        skuName: [
+          { required: true, message: "请输入", trigger: "blur" },
+          { validator: validatetype, trigger: "blur" },
+        ],
+        brandName: [
+          { required: true, message: "请输入", trigger: "blur" },
+          { validator: validatetype, trigger: "blur" },
+        ],
+        price: [
+          { required: true, message: "请输入", trigger: "blur" },
+          { validator: validatetype, trigger: "blur" },
+        ],
+        classId: [
+          { required: true, message: "请输入", trigger: "blur" },
+          { validator: validatetype, trigger: "blur" },
+        ],
+        unit: [
+          { required: true, message: "请输入", trigger: "blur" },
+          { validator: validatetype, trigger: "blur" },
+        ],
+        skuImage: [
           { required: true, message: "请输入", trigger: "blur" },
           { validator: validatetype, trigger: "blur" },
         ],
@@ -311,7 +328,7 @@ export default {
     // 获取商品数据
     async getskus(params) {
       const res = await getskus(params);
-      console.log(res);
+      // console.log(res);
       this.pageIndex = res.pageIndex;
       this.totalCount = res.totalCount;
       this.totalPage = res.totalPage;
@@ -330,6 +347,7 @@ export default {
     // 搜索
     searchBtn(val) {
       // console.log("搜索");
+      this.searchText = val;
       this.getskus({
         skuName: val,
       });
@@ -341,39 +359,70 @@ export default {
     },
     // 导入数据
     clickSecondBtn() {
-      console.log("导入数据");
+      this.importOpreation = true;
+      // console.log("导入数据");
     },
     // 取消按钮
     cancleFn() {
-      if ( this.addOpreation ) {
-        this.addOpreation = false
-      } else if ( this.editOpreation ) {
+      if (this.addOpreation) {
+        this.addOpreation = false;
+      } else if (this.editOpreation) {
         this.editOpreation = false;
       }
       // 重置校验规则和表单数据
       this.$refs.form.resetFields();
       this.formData = {
-        className: "",
+        skuName: "",
+        brandName: "",
+        price: "",
+        classId: "",
+        unit: "",
+        skuImage: "",
+        skuId: "",
       };
     },
     // 确定按钮
     saveFn() {
-      // console.log(this.formData);
+      console.log(this.formData);
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           if (this.addOpreation) {
-            // 添加商品类型
-            await addskuClass(this.formData.className);
-            this.getskuClass();
+            // 添加商品
+            const res = await addskus({
+              skuName: this.formData.skuName,
+              skuImage: this.formData.skuImage,
+              price: this.formData.price * 100,
+              classId: this.formData.classId,
+              unit: this.formData.unit,
+              brandName: this.formData.brandName,
+            });
+            // console.log(res);
+            this.$message.success("添加成功");
+            this.getskus();
             this.addOpreation = false;
           } else if (this.editOpreation) {
-            // 修改商品类型
-            await editskuClass(this.formData);
-            this.getskuClass();
+            // 修改商品
+            const res = await editskus({
+              skuName: this.formData.skuName,
+              skuImage: this.formData.skuImage,
+              price: this.formData.price * 100,
+              classId: this.formData.classId,
+              unit: this.formData.unit,
+              brandName: this.formData.brandName,
+              skuId: this.formData.skuId,
+            });
+            // console.log(res);
+            this.getskus();
+            //       this.getskuClass();
             this.editOpreation = false;
           }
           this.formData = {
-            className: "",
+            skuName: "",
+            brandName: "",
+            price: "",
+            classId: "",
+            unit: "",
+            skuImage: "",
           };
         } else {
           console.log("操作失败");
@@ -384,45 +433,90 @@ export default {
     // 操作
     operationBtn(row, val) {
       if (val === "修改") {
-        console.log("修改");
+        // console.log(row.className);
         this.editOpreation = true;
-        (this.formData.skuName = row.skuName),
-          (this.formData.brandName = row.brandName),
-          (this.formData.price = row.price),
-          (this.formData.className = row.className),
-          (this.formData.unit = row.unit),
-          (this.formData.skuImage = row.skuName),
-          (this.skuId = row.skuId);
+        this.formData.skuName = row.skuName;
+        this.formData.brandName = row.brandName;
+        this.formData.price = row.price / 100;
+        this.formData.classId = row.classId;
+        this.formData.className = row.className;
+        this.formData.unit = row.unit;
+        this.formData.skuImage = row.skuImage;
+        this.formData.skuId = row.skuId;
       }
     },
     // 点击上一页
     async upPage() {
       await this.getskus({
+        skuName: this.searchText,
         pageIndex: --this.pageIndex,
       });
     },
     // 点击下一页
     nextPage() {
       this.getskus({
+        skuName: this.searchText,
         pageIndex: ++this.pageIndex,
       });
     },
     // 上传图片
     handleAvatarSuccess(res, file) {
-      // this.formData.skuImage = URL.createObjectURL(file.raw);
-      this.imageUrl = URL.createObjectURL(file.raw);
+      this.formData.skuImage = URL.createObjectURL(file.raw);
+      // this.imageUrl = URL.createObjectURL(file.raw);
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
+    //实现图片上传功能
+    async httpRequest(item) {
+      //验证图片格式大小信息
+      const isJPG =
+        item.file.type == "image/jpeg" || item.file.type == "image/png";
+      const isLt2M = item.file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("上传图片只能是 JPG 或 PNG 格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传图片大小不能超过 2MB!");
       }
-      return isJPG && isLt2M;
+      //图片格式大小信息没问题 执行上传图片的方法
+      if (isJPG && isLt2M == true) {
+        //定义FormData对象 存储文件
+        let mf = new FormData();
+        //将图片文件放入mf
+        mf.append("fileName", item.file);
+        this.formData.skuImage = await fileupload(mf);
+        console.log(this.formData.skuImage);
+      }
+    },
+    // 上传文件
+    handlefileSuccess() {
+      this.importOpreation = false;
+    },
+    async fileHttpRequest(item) {
+      const extension = item.file.name.substring(
+        item.file.name.lastIndexOf(".") + 1
+      );
+      const isLt1M = item.file.size / 1024 / 1024 < 1;
+      const isxls = extension === "xls" || extension === "xlsx";
+      if (!isxls) {
+        this.$message.warning("只能上传excel的文件");
+      } else if (!isLt1M) {
+        this.$message.warning("文件大小不得超过1M");
+      }
+      // 格式大小信息没问题 执行上传文件
+      if (isLt1M && isxls) {
+        //定义FormData对象 存储文件
+        let mf = new FormData();
+        //将文件放入mf
+        mf.append("fileName", item.file);
+        const res = await importskus(mf);
+      }
+    },
+    cancelImportFn() {
+      this.importOpreation = false;
+    },
+    saveImportFn() {
+      // 手动上传文件
+      this.$refs.fileImport.submit();
+      // this.importOpreation = false;
     },
   },
 };
