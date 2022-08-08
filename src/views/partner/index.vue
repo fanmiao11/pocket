@@ -8,17 +8,11 @@
  * @LastEditTime: 2022-08-03 20:04:58
 -->
 <template>
-  <div>
-    合作社管理
-  </div>
+  <div class="app-main">合作商管理</div>
 </template>
 
 <script>
-export default {
-
-}
+export default {};
 </script>
 
-<style>
-
-</style>
+<style></style>
