@@ -92,7 +92,11 @@
       </div>
     </el-card>
     <!-- 设备详情弹出框 -->
-    <d-dialog :dialogVisible="detailsShow" dialogTitle="设备详情" @close='detailsShow=false'>
+    <d-dialog
+      :dialogVisible="detailsShow"
+      dialogTitle="设备详情"
+      @close="detailsShow = false"
+    >
       <div class="stats">
         <div>
           销售量：<span>{{ skuCollect }}</span>
@@ -107,8 +111,17 @@
           维修次数：<span>{{ repairCount }}</span>
         </div>
       </div>
-      <div class="title">2</div>
-      <div class="list">3</div>
+      <div class="title">商品销量（月）</div>
+      <div class="list">
+        <el-row v-if="skuList.length">
+          <el-col :span="6" v-for="(item, index) in skuList" :key="index"
+            >{{ item.skuName }}:{{ item.count }}</el-col
+          >
+        </el-row>
+        <el-row v-else>
+          <el-col :span="24">当前设备未销售商品</el-col>
+        </el-row>
+      </div>
     </d-dialog>
   </div>
 </template>
@@ -151,6 +164,7 @@ export default {
       repairCount: "", //  维修次数
       supplyCount: "", // 补货次数
       skuCollect: "", // 销量
+      skuList: [], // 销量列表
       orderAmount: "", // 销售额
     };
   },
@@ -212,6 +226,8 @@ export default {
       this.supplyCount = supplyCount;
       // 获取售货机商品销量
       const skuCollect = await getSkuCollect(row.innerCode, startTime, endTime);
+      this.skuList = skuCollect;
+      console.log(this.skuList);
       this.skuCollect = skuCollect.reduce((pre, current) => {
         pre = pre + current.count;
         return pre;
@@ -222,7 +238,6 @@ export default {
         "2022-08-01 00:00:00",
         dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss")
       );
-      // console.log(orderAmount);
       this.orderAmount = orderAmount;
     },
 
@@ -341,5 +356,14 @@ export default {
 .list {
   border-top: 1px solid #d8dde3;
   border-left: 1px solid #d8dde3;
+}
+.el-col {
+  text-align: center;
+  padding: 0 10px;
+  line-height: 40px;
+  height: 40px;
+  border-right: 1px solid #d8dde3;
+  border-bottom: 1px solid #d8dde3;
+  // overflow: hidden;
 }
 </style>

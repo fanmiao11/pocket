@@ -21,7 +21,11 @@
         @nextPage="nextPage"
         :operation="{
           opeWidth: '80',
-          ope: [{ title: '查看', color: false }],
+          ope: [
+            { title: '货道', color: false },
+            { title: '策略', color: false },
+            { title: '修改', color: false },
+          ],
         }"
         :selection="true"
       />
