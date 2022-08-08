@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-05 20:38:44
  * @LastEditors: sj
- * @LastEditTime: 2022-08-05 21:32:19
+ * @LastEditTime: 2022-08-08 08:54:33
 -->
 <template>
   <div class="search">
@@ -52,14 +52,8 @@ export default {
     nameTwo: {
       type: String,
     },
-<<<<<<< HEAD
-    optionArr: {
-      type: Array,
-=======
     optionArr:{
-      type:Array,
-      // default:[]
->>>>>>> 824def5fe43c398233cf34199c8a151e5e0859ad
+      type:Array
     },
     Two: {
       type: Boolean,
@@ -69,14 +63,13 @@ export default {
   components: {
     MyButtom,
   },
-  methods: {
-    searchBtn() {
-      if (this.taskCode === "" && this.taskStatus === "")
-        return this.$message("查询不能为空");
-      this.$emit("search", this.taskCode, this.taskStatus);
-    },
-  },
-};
+
+  methods:{
+      searchBtn() {
+      this.$emit('search',this.taskCode,this.taskStatus)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 10:02:05
  * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:02:05
+ * @LastEditTime: 2022-08-07 12:52:48
 -->
 <!--
  * @Descripttion:
@@ -119,12 +119,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 是否显示多选框
     selection: {
@@ -171,7 +171,7 @@ export default {
   color: red;
 }
 .operationBtn {
-  margin-left: 0px !important;
+  margin-left: 5px !important;
 }
 .result {
   padding: 20px 15px 19px 17px;
