@@ -42,7 +42,7 @@
         <!-- 多选框 -->
        <el-table-column type="selection" v-if="selection"></el-table-column>
         <!-- 序号列 -->
-        <el-table-column prop="id" label="序号"  width="80"></el-table-column>
+        <el-table-column prop="itemIndex" label="序号"  width="80"></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
           :prop="item.prop"
@@ -105,12 +105,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
-      default: [],
+      // default: [],
     },
       // 是否显示多选框
     selection: {
@@ -146,7 +146,7 @@ export default {
   },
   computed:{
     length(){
-      return this.operation.length===4? 200:''
+      return this.operation?.length===4? 200:''
     }
   }
 };

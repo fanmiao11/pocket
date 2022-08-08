@@ -22,80 +22,70 @@
     :dialogVisible="isBackOrderList"
     @close="$emit('close')"
   >
-        <el-table
+    <el-table
       :data="backOrderList"
       style="width: 100%"
-      max-height='400px'
+      max-height="400px"
       class="backOrderList"
-      >
-      <el-table-column
-        prop="channelCode"
-        label="货道编号"
-        width="180">
+    >
+      <el-table-column prop="channelCode" label="货道编号" width="180">
       </el-table-column>
-      <el-table-column
-        prop="skuName"
-        label="商品"
-        width="180">
+      <el-table-column prop="skuName" label="商品" width="180">
       </el-table-column>
-      <el-table-column
-        prop="expectCapacity"
-        label="补货数量">
+      <el-table-column prop="expectCapacity" label="补货数量">
       </el-table-column>
     </el-table>
   </my-dialog>
 </template>
 
 <script>
-import { getBackOrderListApi } from '@/api/operation'
-import MyDialog from '@/components/Dialog.vue'
+import { getBackOrderListApi } from "@/api/operation";
+import MyDialog from "@/components/Dialog.vue";
 export default {
-  data(){
+  data() {
     return {
-      backOrderList:[]
-    }
+      backOrderList: [],
+    };
   },
-  props:{
-    isBackOrderList:{
-      type:Boolean,
-      default:false,
+  props: {
+    isBackOrderList: {
+      type: Boolean,
+      default: false,
     },
-    moreTask:{
+    moreTask: {
       type: Object,
-      default: ()=>{ return {}}
-    }
+      default: () => {
+        return {};
+      },
+    },
   },
-  components:{
-    MyDialog
+  components: {
+    MyDialog,
   },
-  created(){
-    this.getBackOrderList()
+  created() {
+    this.getBackOrderList();
   },
-  methods:{
+  methods: {
     // 获取补货详情
-    async getBackOrderList(){
-
-      this.backOrderList = await getBackOrderListApi(this.moreTask)
-
-    }
-  }
-}
+    async getBackOrderList() {
+      this.backOrderList = await getBackOrderListApi(this.moreTask);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .backOrderList {
-  .el-table__header{
+  .el-table__header {
     thead {
-     ::v-deep tr {
-          background-color: aqua;
+      ::v-deep tr {
+        background-color: aqua;
       }
     }
   }
-
 }
-.el-dialog__body{
+.el-dialog__body {
   padding: 20px 20px 30px;
   color: #666;
 }
-
 </style>

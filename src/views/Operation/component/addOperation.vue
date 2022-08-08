@@ -3,56 +3,71 @@
  * @version:
  * @Author: suiyue
  * @email: 1373842098@qq.com
- * @Date: 2022-08-07 10:05:20
- * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:05:20
--->
-<!--
- * @Descripttion:
- * @version:
- * @Author: suiyue
- * @email: 1373842098@qq.com
  * @Date: 2022-08-04 14:08:21
  * @LastEditors: sj
- * @LastEditTime: 2022-08-06 21:37:28
+ * @LastEditTime: 2022-08-04 14:45:42
 -->
 <template>
-    <my-dialog
-    dialogTitle="新增工单"
-    :dialogVisible="addOpreation"
-    @close="handleClose"
-  >
-   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-  <el-form-item label="设备编号" prop="number" >
-    <el-input v-model="ruleForm.number" placeholder="请输入" maxlength="15" show-word-limit></el-input>
-  </el-form-item>
-  <el-form-item label="工单类型" prop="type">
-    <el-select v-model="ruleForm.type" placeholder="请选择">
-      <el-option label="补货工单" value="type"></el-option>
-    </el-select>
-  </el-form-item>
-   <el-form-item label="补货数量">
-    <span >补货清单</span>
-  </el-form-item>
-    <el-form-item label="运营人员" prop="people">
-    <el-select v-model="ruleForm.people" placeholder="请选择">
-      <!-- <el-option label="补货工单" value="people"></el-option> -->
-    </el-select>
-  </el-form-item>
-  <el-form-item label="备注" prop="tip">
-    <el-input type="textarea" v-model="ruleForm.tip" maxlength="40" show-word-limit placeholder="请输入备注（不超过40字）"></el-input>
-  </el-form-item>
-  <el-form-item>
-    <el-button >取消</el-button>
-    <el-button >确认</el-button>
-  </el-form-item>
-</el-form>
+<my-dialog
+  dialogTitle="新增工单"
+  :dialogVisible="addOpreation"
+  @close="handleClose"
+>
+  <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
-  </my-dialog>
+    <el-form-item label="设备编号" prop="number" >
+      <el-input v-model="ruleForm.number" placeholder="请输入" maxlength="15" show-word-limit></el-input>
+    </el-form-item>
+
+    <el-form-item label="工单类型" prop="type">
+      <el-select style="width:100%" v-model="ruleForm.type" placeholder="请选择">
+        <el-option label="补货工单" value="type"></el-option>
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="补货数量">
+      <span class="el-icon-document" style="color:#5F84FF"></span>
+      <span style="color:#5F84FF;cursor:pointer;" @click="centerDialogVisible = true">补货清单</span>
+    </el-form-item>
+
+    <el-form-item label="运营人员" prop="people">
+      <el-select style="width:100%" v-model="ruleForm.people" placeholder="请选择">
+       <!-- <el-option label="补货工单" value="people"></el-option> -->
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="备注" prop="tip">
+      <el-input type="textarea" v-model="ruleForm.tip" maxlength="40" show-word-limit placeholder="请输入备注（不超过40字）"></el-input>
+    </el-form-item>
+
+    <el-form-item class="btn">
+      <el-button @click.native="handleClose">取消</el-button>
+      <el-button >确认</el-button>
+    </el-form-item>
+
+    <!-- 补货清单弹窗 -->
+    <el-dialog
+      :modal="false"
+      title="补货详情"
+      :visible.sync="centerDialogVisible"
+      width="640px"
+    >
+     <replenishmentDetails :list='replenishmentilst'/>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button style="background:#FF6C28;color:#fff" @click="centerDialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+
+  </el-form>
+</my-dialog>
 </template>
 
 <script>
 import MyDialog from '@/components/Dialog.vue'
+import replenishmentDetails from './replenishmentDetails.vue'
 export default {
   data() {
     return {
@@ -60,7 +75,7 @@ export default {
          number: '',
          type: '',
          tip: '',
-         people: ''
+         people: '',
       },
       rules:{
          number: [
@@ -75,7 +90,16 @@ export default {
            people: [
             { required: true, message: '不可为空', trigger: 'blur' }
           ],
-      }
+      },
+      centerDialogVisible: false,
+      // 新增补货详情头部数据
+       replenishmentilst:{
+        channelCode:"货道编号",
+        channelName:"商品名称",
+        channelCunt:"当前数量",
+        channelAdd:"还可添加",
+        channelQquantity:"补满数量",
+       },
     }
     },
   props:{
@@ -87,14 +111,36 @@ export default {
   methods:{
     handleClose(){
       this.$emit('close');
-    }
+    },
   },
   components:{
-    MyDialog
+    MyDialog,
+    replenishmentDetails
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.btn{
+  display: flex;
+  button:nth-of-type(1){
+    margin-left: 100px;
+  }
+   button:nth-of-type(2){
+    background-color: #FF6C29;
+    color: white;
+    margin-left: 40px;
+  }
+}
+.dialog-footer{
+    position: relative;
+    left: -200px;
+
+   button:nth-of-type(1){
+    position: relative;
+    left: -20px;
+  }
+}
 
 </style>
+
