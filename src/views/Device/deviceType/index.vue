@@ -130,10 +130,22 @@
         class="demo-ruleForm"
       >
         <el-form-item label="型号名称" prop="name">
-          <el-input v-model="ruleForm.name" size="medium"></el-input>
+          <el-input
+            v-model="ruleForm.name"
+            size="medium"
+            placeholder="请输入"
+            maxlength="10"
+            show-word-limit
+          ></el-input>
         </el-form-item>
         <el-form-item label="型号编码" prop="model">
-          <el-input v-model="ruleForm.model" size="medium"></el-input>
+          <el-input
+            v-model="ruleForm.model"
+            size="medium"
+            maxlength="15"
+            show-word-limit
+            placeholder="请输入（限制数字、字母、中划线、下划线）"
+          ></el-input>
         </el-form-item>
         <el-form-item label="货道行数" prop="vmRow">
           <el-input-number
@@ -182,7 +194,9 @@
         </el-form-item>
       </el-form>
       <div class="footer-btn">
-        <my-buttom bcColor="lightsalmon" @click.native="closeDialog">取消</my-buttom>
+        <my-buttom bcColor="lightsalmon" @click.native="closeDialog"
+          >取消</my-buttom
+        >
         <my-buttom bcColor="orange" @click.native="addVmType">确认</my-buttom>
       </div>
     </d-dialog>
@@ -242,6 +256,11 @@ export default {
         ],
         model: [
           { required: true, message: "请输入", trigger: "blur" },
+          {
+            pattern: /^[A-Za-z0-9_-]+$/,
+            message: "请输入合法的型号编码",
+            trigger: "blur",
+          },
           { validator: repeatModel, tiggers: "blur" },
         ],
         vmRow: [{ required: true, message: "请选择", trigger: "blur" }],
@@ -344,8 +363,8 @@ export default {
     async addVmType() {
       try {
         const res = await addVmType(this.ruleForm);
-        this.getTypeList(this.searchParams)
-        this.closeDialog()
+        this.getTypeList(this.searchParams);
+        this.closeDialog();
       } catch (error) {}
     },
   },

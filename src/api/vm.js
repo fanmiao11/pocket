@@ -117,6 +117,11 @@ export const imgUpload = (file) => {
   });
 };
 
+/**
+ * 新增售货机类型
+ * @param {Object} data
+ * @returns
+ */
 export const addVmType = (data) => {
   return request({
     url: "/api/vm-service/vmType",
