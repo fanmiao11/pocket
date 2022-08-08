@@ -20,7 +20,7 @@
         @upPage="upPage"
         @nextPage="nextPage"
         :operation="{
-          opeWidth: '80',
+          opeWidth: '200',
           ope: [
             { title: '货道', color: false },
             { title: '策略', color: false },
