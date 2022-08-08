@@ -20,7 +20,7 @@
           <my-buttom
             bcColor="orange"
             icon="el-icon-circle-plus-outline"
-            @click.native="clickAddBtn"
+            @click.native="clickAddBtn('新增设备类型')"
             >新建</my-buttom
           >
         </div>
@@ -118,8 +118,8 @@
     </el-card>
     <!-- 新增设备类型弹出框 -->
     <d-dialog
-      dialogTitle="新增设备类型"
-      :dialogVisible="addEquipmentShow"
+      :dialogTitle="dialogTitle"
+      :dialogVisible="equipmentShow"
       @close="closeDialog"
     >
       <el-form
@@ -209,7 +209,13 @@ import DResultList from "@/components/ResultList.vue";
 import MyButtom from "@/components/Button.vue";
 import MyPagination from "@/components/Pagination.vue";
 import DDialog from "@/components/Dialog.vue";
-import { getTypeList, imgUpload, addVmType } from "@/api/vm";
+import {
+  getTypeList,
+  imgUpload,
+  addVmType,
+  changeVmType,
+  delVmType,
+} from "@/api/vm";
 export default {
   components: {
     DSearch,
@@ -222,12 +228,28 @@ export default {
   data() {
     const repeatName = (rule, value, callback) => {
       let flag;
-      flag = this.tableData.some((ele) => ele.name === value);
+      if (this.dialogTitle === "新增设备类型") {
+        // flag = this.tableData.some((ele) => ele.name === value);
+      }
+      if (this.dialogTitle === "修改设备类型") {
+        let filter = this.changeName;
+        flag = this.tableData
+          .filter((ele) => ele.name !== filter)
+          .some((ele) => ele.name === value);
+      }
       flag ? callback(new Error("型号名称重复")) : callback();
     };
     const repeatModel = (rule, value, callback) => {
       let flag;
-      flag = this.tableData.some((ele) => ele.model === value);
+      if (this.dialogTitle === "新增设备类型") {
+        flag = this.tableData.some((ele) => ele.model === value);
+      }
+      if (this.dialogTitle === "修改设备类型") {
+        let filter = this.changeModel;
+        flag = this.tableData
+          .filter((ele) => ele.model !== filter)
+          .some((ele) => ele.model === value);
+      }
       flag ? callback(new Error("型号编码重复")) : callback();
     };
     return {
@@ -238,21 +260,22 @@ export default {
       totalPage: "", //  总页数
       totalCount: "", // 总共多少条记录
       loading: false, // 控制加载
-      addEquipmentShow: false, // 新增设备类型弹出框控制
+      equipmentShow: false, // 新增设备类型弹出框控制
+      dialogTitle: "新增设备类型", // 弹框标头
       // 弹框表单数据
       ruleForm: {
         name: "",
         model: "",
-        vmRow: "",
-        vmCol: "",
-        channelMaxCapacity: "",
+        vmRow: null,
+        vmCol: null,
+        channelMaxCapacity: null,
         image: "", // 图片路径
       },
       // 校验规则
       rules: {
         name: [
           { required: true, message: "请输入", trigger: "blur" },
-          { validator: repeatName, tiggers: "blur" },
+          { validator: repeatName, trigger: "blur" },
         ],
         model: [
           { required: true, message: "请输入", trigger: "blur" },
@@ -270,6 +293,8 @@ export default {
         ],
         image: [{ required: true, message: "请上传图片", trigger: "blur" }],
       },
+      changeName: "", // 为了修改时校验
+      changeModel: "", // 为了修改时校验
     };
   },
 
@@ -297,11 +322,29 @@ export default {
       });
     },
     // 点击操作按钮
-    handleClick(row, val) {
-      console.log(row);
-      console.log(val);
+    async handleClick(row, val) {
+      if (val === "操作") {
+        this.dialogTitle = "修改设备类型";
+        this.equipmentShow = true;
+        this.ruleForm = {
+          name: row.name,
+          model: row.model,
+          vmRow: row.vmRow,
+          vmCol: row.vmCol,
+          channelMaxCapacity: row.channelMaxCapacity,
+          image: row.image, // 图片路径
+          typeId: row.typeId,
+        };
+        this.changeName = row.name;
+        this.changeModel = row.model;
+      }
+      if (val === "删除") {
+        await delVmType(row.typeId);
+        this.getTypeList(this.searchParams);
+      }
+      // console.log(row);
+
       // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
-      this.$emit("operationBtn", row, val);
     },
     // 点击上一页
     upPage() {
@@ -325,7 +368,8 @@ export default {
     },
     // 点击新增按钮
     clickAddBtn() {
-      this.addEquipmentShow = true;
+      this.equipmentShow = true;
+      this.dialogTitle = "新增设备类型";
     },
     // 上传头像
     async uploadImage(file) {
@@ -348,7 +392,7 @@ export default {
     },
     //关闭弹框
     closeDialog() {
-      this.addEquipmentShow = false;
+      this.equipmentShow = false;
       this.$refs.ruleForm.clearValidate();
       this.ruleForm = {
         name: "",
@@ -359,12 +403,20 @@ export default {
         image: "", // 图片路径
       };
     },
-    // 新增货柜类型
+    // 弹框确认
     async addVmType() {
       try {
-        const res = await addVmType(this.ruleForm);
-        this.getTypeList(this.searchParams);
-        this.closeDialog();
+        if (this.dialogTitle === "新增设备类型") {
+          await addVmType(this.ruleForm);
+          this.getTypeList(this.searchParams);
+          this.closeDialog();
+        }
+        if (this.dialogTitle === "修改设备类型") {
+          const res = await changeVmType(this.ruleForm);
+          console.log(res);
+          this.getTypeList(this.searchParams);
+          this.closeDialog();
+        }
       } catch (error) {}
     },
   },

@@ -129,3 +129,23 @@ export const addVmType = (data) => {
     data,
   });
 };
+
+/**
+ * 售货机类型修改
+ * @param {String} typeId
+ * @returns
+ */
+export const changeVmType = (data) => {
+  return request({
+    url: "/api/vm-service/vmType/" + data.typeId,
+    method: "put",
+    data,
+  });
+};
+
+export const delVmType = (data) => {
+  return request({
+    url: "/api/vm-service/vmType/" + data,
+    method: "DELETE",
+  });
+};
