@@ -52,8 +52,14 @@ export default {
     nameTwo: {
       type: String,
     },
+<<<<<<< HEAD
     optionArr: {
       type: Array,
+=======
+    optionArr:{
+      type:Array,
+      // default:[]
+>>>>>>> 824def5fe43c398233cf34199c8a151e5e0859ad
     },
     Two: {
       type: Boolean,

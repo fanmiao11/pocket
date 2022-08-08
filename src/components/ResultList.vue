@@ -123,10 +123,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
+      default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
+      default: [],
     },
     // 是否显示多选框
     selection: {
@@ -160,11 +162,11 @@ export default {
       this.$emit("operationBtn", row, val);
     },
   },
-  computed: {
-    length() {
-      return this.operation.opeWidth ? this.operation.opeWidth : "";
-    },
-  },
+  computed:{
+    length(){
+      return this.operation.length===4? 200:''
+    }
+  }
 };
 </script>
 
