@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-03 20:20:38
  * @LastEditors: sj
- * @LastEditTime: 2022-08-08 00:29:48
+ * @LastEditTime: 2022-08-08 10:35:00
 -->
 <template>
   <div class="app-main">
@@ -25,7 +25,7 @@
     ></ResultList>
 
     <!-- 修改弹层 -->
-    <MyDialog :dialogVisible="editDialog" :dialogTitle="dialogTitle" @close="closeDialog">
+    <MyDialog :dialogVisible="editDialog" :dialogTitle="dialogTitle" @close="closeDialog" v-if="editDialog">
       <EditInfo @close="editDialog=false" @success="getUserList()" :userInfo="userInfo" ref="edit"/>
     </MyDialog>
 
@@ -113,6 +113,7 @@ export default {
     clickAddBtn(){
       this.dialogTitle ='新增人员'
       this.editDialog = true;
+      this.userInfo={}
     },
    // 点击搜索
    searchUser(val){
