@@ -100,6 +100,7 @@ export default {
        this.pageIndex=res.pageIndex
        res.currentPageRecords.forEach((item,index) => item.itemIndex =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
+       console.log(this.tableData);
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
     },
