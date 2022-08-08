@@ -9,7 +9,7 @@
 -->
 <template>
   <div class="app-main">
-    <my-search nameOne="人员搜索" @search="searchUser"/>
+    <my-search nameOne="人员搜索" @search="searchUser" />
 
     <ResultList
       :tableData="tableData"
@@ -25,23 +25,31 @@
     ></ResultList>
 
     <!-- 修改弹层 -->
-    <MyDialog :dialogVisible="editDialog" :dialogTitle="dialogTitle" @close="closeDialog">
-      <EditInfo @close="editDialog=false" @success="getUserList()" :userInfo="userInfo" ref="edit"/>
+    <MyDialog
+      :dialogVisible="editDialog"
+      :dialogTitle="dialogTitle"
+      @close="closeDialog"
+    >
+      <EditInfo
+        @close="editDialog = false"
+        @success="getUserList()"
+        :userInfo="userInfo"
+        ref="edit"
+      />
     </MyDialog>
-
   </div>
 </template>
 
 <script>
-import { getUserList ,deluserInfo} from "@/api/personnel";
+import { getUserList, deluserInfo } from "@/api/personnel";
 import MySearch from "@/components/Search.vue";
 import ResultList from "@/components/ResultList.vue";
 import MyDialog from "@/components/Dialog.vue";
-import EditInfo from './componments/editInfo.vue'
+import EditInfo from "./componments/editInfo.vue";
 export default {
   data() {
     return {
-      dialogTitle:'',
+      dialogTitle: "",
       tableData: [],
       pageIndex: "",
       totalPage: "",
@@ -52,13 +60,15 @@ export default {
         { prop: "role.roleName", label: "角色" },
         { prop: "mobile", label: "联系电话" },
       ],
-      operationArr: [
-        // 操作
-        { title: "修改", color: false },
-        { title: "删除", color: true },
-      ],
+      operationArr: {
+        ope: [
+          // 操作
+          { title: "修改", color: false },
+          { title: "删除", color: true },
+        ],
+      },
       editDialog: false,
-      userInfo:{} // 点击当前行的信息
+      userInfo: {}, // 点击当前行的信息
     };
   },
   created() {
@@ -68,7 +78,7 @@ export default {
     MySearch,
     ResultList,
     MyDialog,
-    EditInfo
+    EditInfo,
   },
   methods: {
     async getUserList(data) {
@@ -100,42 +110,40 @@ export default {
     // 点击修改
     async operationBtn(row, val) {
       if (val === "修改") {
-        this.dialogTitle ='编辑人员'
+        this.dialogTitle = "编辑人员";
         this.editDialog = true;
-        this.userInfo = row
-      }else if(val === "删除") {
-        await deluserInfo(row.id)
-        this.getUserList()
-        this.$message.success('删除成功')
+        this.userInfo = row;
+      } else if (val === "删除") {
+        await deluserInfo(row.id);
+        this.getUserList();
+        this.$message.success("删除成功");
       }
     },
     //点击新增
-    clickAddBtn(){
-      this.dialogTitle ='新增人员'
+    clickAddBtn() {
+      this.dialogTitle = "新增人员";
       this.editDialog = true;
     },
-   // 点击搜索
-   searchUser(val){
-     this.getUserList({userName: val})
-   },
-   // 关闭谈层 x 号
-   closeDialog(){
-    this.editDialog=false
-    this.$refs.edit.$refs.Form.resetFields()
-    this.$refs.edit.ruleForm={
-      userName: '', // 用户名
-      roleId:'', //角色Id integer
-      mobile: '', // 手机号
-      regionId:'', // 所属区域Id
-      regionName: '', //所属区域名称
-      status: true, //启用状态
-      image: '', //头像Url
-      }
-   }
-   },
+    // 点击搜索
+    searchUser(val) {
+      this.getUserList({ userName: val });
+    },
+    // 关闭谈层 x 号
+    closeDialog() {
+      this.editDialog = false;
+      this.$refs.edit.$refs.Form.resetFields();
+      this.$refs.edit.ruleForm = {
+        userName: "", // 用户名
+        roleId: "", //角色Id integer
+        mobile: "", // 手机号
+        regionId: "", // 所属区域Id
+        regionName: "", //所属区域名称
+        status: true, //启用状态
+        image: "", //头像Url
+      };
+    },
+  },
 };
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

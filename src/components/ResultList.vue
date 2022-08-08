@@ -1,21 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: suiyue
- * @email: 1373842098@qq.com
- * @Date: 2022-08-07 10:02:05
- * @LastEditors: sj
- * @LastEditTime: 2022-08-07 12:52:48
--->
-<!--
- * @Descripttion:
- * @version:
- * @Author: suiyue
- * @email: 1373842098@qq.com
- * @Date: 2022-08-05 23:06:21
- * @LastEditors: sj
- * @LastEditTime: 2022-08-07 09:52:21
--->
 <template>
   <div class="result">
     <!-- 表格上方按钮 -->
@@ -47,16 +29,31 @@
         <!-- 多选框 -->
         <el-table-column type="selection" v-if="selection"></el-table-column>
         <!-- 序号列 -->
-        <el-table-column prop="id" label="序号"  width="80"></el-table-column>
+        <el-table-column
+          prop="itemIndex"
+          label="序号"
+          width="80"
+        ></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
           v-for="(item, index) in tableArr"
           :prop="item.prop"
           :label="item.label"
           :key="index"
-          :formatter="formatter"
-          :show-overflow-tooltip='true'
-        ></el-table-column>
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">
+            <!-- 如果是图片列表显示图片 -->
+            <template v-if="item.label === '商品图片'">
+              <img :src="scope.row.skuImage" />
+            </template>
+            <!-- 如果不是图片列表正常显示内容 -->
+            <template v-else >
+              <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/>
+              <!-- {{ scope.row[item.prop] }} -->
+            </template>
+          </template>
+        </el-table-column>
         <!-- 操作列 -->
         <el-table-column
           fixed="right"
@@ -154,29 +151,27 @@ export default {
     },
     handleClick(row, val) {
       console.log(row);
-    // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
-      this.$emit("operationBtn", row,val);
+      // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
+      this.$emit("operationBtn", row, val);
     },
   },
-  computed:{
-    length(){
-      return this.operation?.length===4? 200:''
-    }
-  }
+  computed: {
+    length() {
+      return this.operation?.opeWidth ? this.operation.opeWidth : "";
+    },
+  },
 };
 </script>
-
 <style lang="scss" scoped>
 .color {
   color: red;
 }
 .operationBtn {
-  margin-left: 5px !important;
+  margin-left: 0px !important;
 }
 .result {
   padding: 20px 15px 19px 17px;
   background-color: #fff;
-
   .operation-btn {
     margin-bottom: 20px;
   }
@@ -199,7 +194,6 @@ export default {
       font-size: 16px !important;
       color: #dbdfe5 !important;
     }
-
     .pageBtn {
       width: 70px;
       height: 32px;
