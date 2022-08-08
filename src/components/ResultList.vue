@@ -49,7 +49,8 @@
             </template>
             <!-- 如果不是图片列表正常显示内容 -->
             <template v-else >
-              <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/>
+              <!-- <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/> -->
+              <span v-html='formatter(scope.row,scope.column, scope.row[item.prop])'/>
               <!-- {{ scope.row[item.prop] }} -->
             </template>
           </template>
@@ -139,18 +140,25 @@ export default {
   },
   methods: {
     formatter(row, column, cellValue) {
-      if (column.label === "创建日期") {
-          return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
-      } else if (column.label === "工单方式") {
-          return row.createType ? "手动" : "自动";
-      } else if(column.label === '商品价格'){
-        return Number(row.price/100)
-      }else {
-        return cellValue;
+      if(column.property.indexOf('.')===-1){
+        if (column.label === "创建日期") {
+            return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
+        } else if (column.label === "工单方式") {
+            return row.createType ? "手动" : "自动";
+        } else if(column.label === '商品价格'){
+          return Number(row.price/100)
+        }else {
+          return cellValue;
+        }
+      }else{
+        const str = column.property.split('.')
+        const one = str[0]
+        const two = str[1]
+        return row[one][two]
       }
     },
     handleClick(row, val) {
-      console.log(row);
+      // console.log(row);
       // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
       this.$emit("operationBtn", row, val);
     },

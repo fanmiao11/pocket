@@ -5,67 +5,22 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-03 20:20:38
  * @LastEditors: sj
- * @LastEditTime: 2022-08-08 14:20:43
+ * @LastEditTime: 2022-08-08 20:16:45
 -->
 <template>
   <div class="app-main">
-    <my-search nameOne="人员搜索" @search="searchUser" />
+     <my-search nameOne="人员搜索"/>
 
-    <ResultList
-      :tableData="tableData"
-      :totalPage="totalPage"
-      :totalCount="totalCount"
-      :pageIndex="pageIndex"
-      :tableArr="tableArr"
-      :operation="operationArr"
-      @upPage="upPage"
-      @nextPage="nextPage"
-      @operationBtn="operationBtn"
-      @clickAddBtn="clickAddBtn"
-    ></ResultList>
+     <ResultList></ResultList>
 
-    <!-- 修改弹层 -->
-    <MyDialog :dialogVisible="editDialog" :dialogTitle="dialogTitle" @close="closeDialog" v-if="editDialog">
-      <EditInfo @close="editDialog=false" @success="getUserList()" :userInfo="userInfo" ref="edit"/>
-    </MyDialog>
   </div>
 </template>
 
 <script>
-import { getUserList, deluserInfo } from "@/api/personnel";
-import MySearch from "@/components/Search.vue";
-import ResultList from "@/components/ResultList.vue";
-import MyDialog from "@/components/Dialog.vue";
-import EditInfo from "./componments/editInfo.vue";
+import MySearch from '@/components/Search.vue'
+import ResultList from '@/components/ResultList.vue'
 export default {
-  data() {
-    return {
-      dialogTitle: "",
-      tableData: [],
-      pageIndex: "",
-      totalPage: "",
-      totalCount: "",
-      tableArr: [
-        { prop: "userName", label: "人员名称" },
-        { prop: "regionName", label: "归属区域" },
-        { prop: "role.roleName", label: "角色" },
-        { prop: "mobile", label: "联系电话" },
-      ],
-      operationArr: {
-        ope: [
-          // 操作
-          { title: "修改", color: false },
-          { title: "删除", color: true },
-        ],
-      },
-      editDialog: false,
-      userInfo: {}, // 点击当前行的信息
-    };
-  },
-  created() {
-    this.getUserList();
-  },
-  components: {
+   components:{
     MySearch,
     ResultList,
     MyDialog,
@@ -138,4 +93,6 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+
+</style>
