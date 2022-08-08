@@ -52,18 +52,8 @@ export default {
     nameTwo: {
       type: String,
     },
-<<<<<<< HEAD
-    optionArr: {
-      type: Array,
-=======
     optionArr:{
-<<<<<<< HEAD
       type:Array
-=======
-      type:Array,
-      // default:[]
->>>>>>> 824def5fe43c398233cf34199c8a151e5e0859ad
->>>>>>> 22e1baeb9d0f0d7b9251ee82480e6dd16d69e72a
     },
     Two: {
       type: Boolean,
@@ -73,21 +63,13 @@ export default {
   components: {
     MyButtom,
   },
-<<<<<<< HEAD
+
   methods:{
       searchBtn() {
-      // if(this.taskCode===''&&this.taskStatus==='') return this.$message('查询不能为空')
       this.$emit('search',this.taskCode,this.taskStatus)
-=======
-  methods: {
-    searchBtn() {
-      if (this.taskCode === "" && this.taskStatus === "")
-        return this.$message("查询不能为空");
-      this.$emit("search", this.taskCode, this.taskStatus);
->>>>>>> 22e1baeb9d0f0d7b9251ee82480e6dd16d69e72a
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
