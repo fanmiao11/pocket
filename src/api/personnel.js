@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 10:40:03
  * @LastEditors: sj
- * @LastEditTime: 2022-08-08 09:01:50
+ * @LastEditTime: 2022-08-08 18:11:09
  */
 //  人员管理
 import request from '@/utils/request'
@@ -70,4 +70,31 @@ export const addUserInfo = (data) => request({
   url: '/api/user-service/user',
   method: 'POST',
   data
+})
+
+// 人员工作量列表
+export const getUserWorkList = (params, data) => request({
+  url: '/api/user-service/user/searchUserWork',
+  params,
+  data
+})
+
+
+// 获取用户工作量
+/**
+ *
+ * @param {Object} params
+ *    userId 用户ID
+ *   start  2020-10-01 00:00:00
+ *   end   2020-10-31 00:00:00
+ * @returns
+ */
+export const getUserWork = (params) => request({
+  url: '/api/task-service/task/userWork',
+  params
+})
+
+//获取用户基本信息
+export const getuserInfo = (id) => request({
+  url: `/api/user-service/user/${id}`,
 })
