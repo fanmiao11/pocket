@@ -8,7 +8,7 @@
  * @LastEditTime: 2022-08-03 19:58:21
 -->
 <template>
-  <div>
+  <div class="app-main">
     点位管理
   </div>
 </template>

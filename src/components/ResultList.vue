@@ -58,20 +58,9 @@
           :prop="item.prop"
           :label="item.label"
           :key="index"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">
-            <!-- 如果是图片列表显示图片 -->
-            <template v-if="item.label === '商品图片'">
-              <img :src="scope.row.skuImage" />
-            </template>
-            <!-- 如果不是图片列表正常显示内容 -->
-            <template v-else >
-              <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/>
-              <!-- {{ scope.row[item.prop] }} -->
-            </template>
-          </template>
-        </el-table-column>
+          :formatter="formatter"
+          :show-overflow-tooltip='true'
+        ></el-table-column>
         <!-- 操作列 -->
         <el-table-column
           fixed="right"
@@ -134,12 +123,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
-      // default: [],
+      default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
-      // default: [],
+      default: [],
     },
     // 是否显示多选框
     selection: {
@@ -169,15 +158,15 @@ export default {
     },
     handleClick(row, val) {
       console.log(row);
-      // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
-      this.$emit("operationBtn", row, val);
+    // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
+      this.$emit("operationBtn", row,val);
     },
   },
-  computed: {
-    length() {
-      return this.operation?.opeWidth ? this.operation.opeWidth : "";
-    },
-  },
+  computed:{
+    length(){
+      return this.operation?.length===4? 200:''
+    }
+  }
 };
 </script>
 
