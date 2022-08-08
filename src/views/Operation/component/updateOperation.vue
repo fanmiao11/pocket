@@ -113,10 +113,9 @@ export default {
   },
   watch: {
     moreTask: {
+      immediate:true,
       deep: true,
       handler(newVal, oldVal) {
-        this.$refs.ruleForm.resetFields()
-        this.ruleForm ={}
         this.ruleForm = newVal;
       },
     },

@@ -138,7 +138,7 @@
       :visible.sync="isupdateWorkOrder"
       width="640px"
     >
-        <updateWorkOrder :moreTask='moreTask'/>
+        <updateWorkOrder :moreTask='moreTask' ref="updateWorkOrder"/>
       <span slot="footer" class="dialog-footer btn1">
         <el-button @click="isupdateWorkOrder = false">取 消</el-button>
         <el-button style="background:#FF6C28;color:#fff" @click="isupdateWorkOrder = false"
@@ -212,14 +212,14 @@ export default {
         })
         await delWorkOrderApi(val?.taskId,{...val?.taskId,...val?.desc})
         this.$message.success('删除成功')
-        this.$emit('refresh')
+        this.$emit('refresh',null,val.taskStatusTypeEntity.statusId)
         this.handleClose()
       } catch (error) {}
     },
     // 修改工单
     updateWorkOrder(){
       this.isupdateWorkOrder = true
-    }
+    },
   },
   components: {
     MyButtom,

@@ -16,7 +16,7 @@
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
     <el-form-item label="设备编号" prop="number" >
-      <el-input v-model="ruleForm.number" placeholder="请输入" maxlength="15" show-word-limit></el-input>
+      <el-input @blur="getOperatingPersonnel" v-model="ruleForm.number" placeholder="请输入" maxlength="15" show-word-limit></el-input>
     </el-form-item>
 
     <el-form-item label="工单类型" prop="type">
@@ -32,7 +32,7 @@
 
     <el-form-item label="运营人员" prop="people">
       <el-select style="width:100%" v-model="ruleForm.people" placeholder="请选择">
-       <!-- <el-option label="补货工单" value="people"></el-option> -->
+       <el-option v-for="item in operatingPersonnelList" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
       </el-select>
     </el-form-item>
 
@@ -42,7 +42,7 @@
 
     <el-form-item class="btn">
       <el-button @click.native="handleClose">取消</el-button>
-      <el-button >确认</el-button>
+      <el-button @click.native="addWorkOrder">确认</el-button>
     </el-form-item>
 
     <!-- 补货清单弹窗 -->
@@ -52,10 +52,10 @@
       :visible.sync="centerDialogVisible"
       width="640px"
     >
-     <replenishmentDetails :list='replenishmentilst'/>
+     <replenishmentDetails  ref="replenishment" :list='replenishmentilst' :content="vendingMachineAisl" type="1"/>
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
-        <el-button style="background:#FF6C28;color:#fff" @click="centerDialogVisible = false"
+        <el-button style="background:#FF6C28;color:#fff" @click.native="replenishment"
           >确 定</el-button
         >
       </span>
@@ -68,6 +68,7 @@
 <script>
 import MyDialog from '@/components/Dialog.vue'
 import replenishmentDetails from './replenishmentDetails.vue'
+import { getOperatingPersonnelApi ,getVendingMachineAisleApi,addWorkOrderApi} from '@/api/operation.js'
 export default {
   data() {
     return {
@@ -100,6 +101,12 @@ export default {
         channelAdd:"还可添加",
         channelQquantity:"补满数量",
        },
+      //  运营人员列表
+       operatingPersonnelList:[],
+      //  售货机补货详情列表
+       vendingMachineAisl:[],
+      // 售货机补货详情列表被修改后的
+      updateVendingMachineAisl:[]
     }
     },
   props:{
@@ -110,7 +117,60 @@ export default {
   },
   methods:{
     handleClose(){
+      this.$refs.ruleForm.resetFields()
+      this.ruleForm ={}
       this.$emit('close');
+    },
+    // 获取运营人员列表
+   async getOperatingPersonnel(){
+    this.vendingMachineAisl = []
+    if(this.ruleForm.number?.length <= 0) {
+      return 
+    }
+    // 人员
+    const res = await getOperatingPersonnelApi(this.ruleForm.number)
+    console.log(111111);
+    console.log(res);
+    console.log(111111);
+    this.operatingPersonnelList = res
+    // 判断有没有运营人员有就可以获取到货道
+    if(res?.length<=0) return
+    // 货道
+    const data = await getVendingMachineAisleApi(this.ruleForm.number)
+    console.log(222222);
+    console.log(data);
+    console.log(222222);
+    this.vendingMachineAisl = data
+    },
+    // 点击确定创建工单
+   async addWorkOrder(){
+      try {
+       await this.$refs.ruleForm.validate()   
+        let obj={
+        createType:1,
+        innerCode:this.ruleForm.number,
+        userId:this.$store.state.user.token.userId,
+        productType:2,
+        desc:this.ruleForm.tip,
+        details:this.updateVendingMachineAisl,
+        assignorId:this.operatingPersonnelList[0]?.userId
+      }
+      const rulis = await addWorkOrderApi(obj)
+      console.log(rulis);
+      } catch (error) {
+        console.log('为空了');
+        console.dir(error);
+        this.$message.error(error.response.data)
+        
+      }
+    },
+    // 点击补货详情确定
+    replenishment(){
+      console.log('详情页被修改后的数据');
+      this.updateVendingMachineAisl=this.$refs.replenishment.content
+      console.dir(this.$refs.replenishment.content);
+      console.log(this.centerDialogVisible);
+      this.centerDialogVisible = false
     },
   },
   components:{
