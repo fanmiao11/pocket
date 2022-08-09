@@ -11,19 +11,19 @@
             <div class="box">
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">5</div>
+                  <div class="num">{{ dayOrderCount }}</div>
                   <div class="text">当日销售量（个）</div>
                 </div>
               </el-col>
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">5</div>
+                  <div class="num">{{ dayOrderAmount }}</div>
                   <div class="text">当前销售额（元）</div>
                 </div>
               </el-col>
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">5</div>
+                  <div class="num">{{ dayTotalBill }}</div>
                   <div class="text">当日分成（元）</div>
                 </div>
               </el-col>
@@ -37,19 +37,19 @@
             <div class="box">
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">3225</div>
+                  <div class="num">{{monthOrderCount}}</div>
                   <div class="text">当月销售量（个）</div>
                 </div>
               </el-col>
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">2</div>
-                  <div class="text">当月销售额（元）</div>
+                  <div class="num">{{Number(monthOrderAmount/10000).toFixed(2)}}</div>
+                  <div class="text">当月销售额（万元）</div>
                 </div>
               </el-col>
               <el-col class="stats">
                 <div class="item">
-                  <div class="num">31.</div>
+                  <div class="num">{{ monthTotalBill }}</div>
                   <div class="text">当月分成（元）</div>
                 </div>
               </el-col>
@@ -64,18 +64,23 @@
       <div>
         <el-form :inline="true" class="demo-form-inline">
           <el-form-item label="合作商：">
-            <!-- <el-select placeholder="请选择">
+            <el-select placeholder="请选择" v-model="partner">
               <el-option label="区域一" value="shanghai"></el-option>
-            </el-select> -->
+            </el-select>
           </el-form-item>
           <el-form-item label="日期：">
             <el-date-picker
-              v-model="value1"
+              v-model="dateArr"
               type="daterange"
               range-separator="~"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
+              :start-placeholder="start"
+              :end-placeholder="end"
+              format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd+HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
+              disabledDate="disabledDate"
             >
+              >
             </el-date-picker>
           </el-form-item>
           <el-form-item>
@@ -85,16 +90,16 @@
       </div>
       <!-- 表头统计 -->
       <div class="report">
-        <div>笔数统计：<span :style="{ color: 'red' }">3225</span>个</div>
-        <div>收入统计：<span :style="{ color: 'red' }">3225</span>元</div>
-        <div>分成统计：<span :style="{ color: 'red' }">3225</span>元</div>
+        <div>笔数统计：<span :style="{ color: 'red' }">{{monthOrderCount}}</span>个</div>
+        <div>收入统计：<span :style="{ color: 'red' }">{{monthOrderAmount}}</span>元</div>
+        <div>分成统计：<span :style="{ color: 'red' }">{{monthTotalBill}}</span>元</div>
       </div>
       <!-- 表格数据渲染 -->
       <div>
         <!-- table -->
         <result-list
           :isShowBtn="false"
-          :isShowPagination="false"
+          :isShowPagination="isShowPagination"
           :isShowOpe="false"
           :tableArr="tableArr"
           :tableData="tableData"
@@ -108,27 +113,114 @@
 
 <script>
 import ResultList from "@/components/ResultList.vue";
+import { getpartnercollect, gettotalBill, getorderAmount,getorderCount } from "@/api/report";
+
+import dayjs from "dayjs";
 export default {
   data() {
     return {
-      value1: "",
+      // start: dayjs().startOf("month").format("YYYY-MM-DD"),
+      // end: dayjs(new Date()).format("YYYY-MM-DD"),
+      dateArr: [],
+      // dateArr: [this.start + "+00:00:00", this.end + "+23:59:59"],
+      partner: "",
       tableArr: [
-        { prop: "skuName", label: "订单日期" },
-        { prop: "skuImage", label: "合作商" },
-        { prop: "brandName", label: "分成比例" },
-        { prop: "unit", label: "收入(元)" },
-        { prop: "price", label: "笔数" },
-        { prop: "className", label: "分成金额(元)" },
+        { prop: "date", label: "订单日期" },
+        { prop: "ownerName", label: "合作商" },
+        { prop: "ratio", label: "分成比例" },
+        { prop: "orderTotalMoney", label: "收入(元)" },
+        { prop: "orderCount", label: "笔数" },
+        { prop: "totalBill", label: "分成金额(元)" },
       ],
       tableData: [],
+      pageIndex: "",
+      totalPage: "",
+      totalCount: "",
+      dayTotalBill: "",
+      dayOrderAmount: "",
+      dayOrderCount:'',
+      monthTotalBill: "",
+      monthOrderAmount: "",
+      monthOrderCount:'',
     };
   },
-  methods:{
-    onSubmit(){},
+  computed: {
+    start() {
+      return dayjs().startOf("month").format("YYYY-MM-DD");
+    },
+    end() {
+      return dayjs(new Date()).format("YYYY-MM-DD");
+    },
+    isShowPagination() {
+      if (this.totalPage === "1" || this.totalPage === "0") {
+        return false;
+      } else {
+        return true;
+      }
+    },
   },
-  components:{
+  async created() {
+    this.getpartnercollect({
+      start: this.start,
+      end: this.end,
+    });
+    // 日销售统计
+    this.dayTotalBill =
+      (await gettotalBill({
+        start: this.end + " 00:00:00",
+        end: this.end + " 23:00:00",
+      })) / 100;
+    // 日收入统计 （元）
+    this.dayOrderAmount = await getorderAmount({
+      start: this.end + " 00:00:00",
+      end: this.end + " 23:00:00",
+    })/100
+    // 日销售量（个）
+    this.dayOrderCount = await getorderCount({
+      start: this.end + " 00:00:00",
+      end: this.end + " 23:00:00",
+    })
+    // 月销售统计
+    this.monthTotalBill =
+      (await gettotalBill({
+        start: this.start + " 00:00:00",
+        end: this.end + " 23:00:00",
+      })) / 100;
+    // 月收入统计 （万元）
+    this.monthOrderAmount = await getorderAmount({
+      start: this.start + " 00:00:00",
+      end: this.end + " 23:00:00",
+    })/100
+    // 月销售量（个）
+    this.monthOrderCount = await getorderCount({
+      start: this.start + " 00:00:00",
+      end: this.end + " 23:00:00",
+    })
+  },
+  methods: {
+    onSubmit() {},
+    async getpartnercollect(params) {
+      const res = await getpartnercollect(params);
+      console.log(res);
+      this.tableData = res.currentPageRecords;
+      this.pageIndex = res.pageIndex;
+      this.totalPage = res.totalPage;
+      this.totalCount = res.totalCount;
+      this.tableData.forEach((item, index) => {
+        item.itemIndex = (this.pageIndex - 1) * 10 + index + 1;
+        item.ratio = item.ratio + "%";
+        item.orderTotalMoney = "+" + item.orderTotalMoney / 100;
+        item.totalBill = "+" + item.totalBill / 100;
+      });
+    },
+    // async gettotalBill(params){
+    //   const res = await gettotalBill(params)
+    //   return res/100
+    // }
+  },
+  components: {
     ResultList,
-  }
+  },
 };
 </script>
 
@@ -203,6 +295,9 @@ export default {
   .app-container {
     .report {
       display: flex;
+      div{
+        margin-right: 50px;
+      }
     }
   }
 }
