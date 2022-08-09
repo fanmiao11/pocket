@@ -71,8 +71,6 @@ export default {
   },
   methods: {
     searchBtn() {
-      if (this.taskCode === "" && this.taskStatus === "")
-        return this.$message("查询不能为空");
       this.$emit("search", this.taskCode, this.taskStatus);
     },
   },

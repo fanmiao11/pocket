@@ -1,8 +1,8 @@
 <template>
   <my-dialog
-    dialogTitle="新增区域"
+    :dialogTitle="dialogTitle"
     :dialogVisible="addOpreation"
-    @close="handleClose"
+    @close="onClose"
   >
     <el-form
       :model="ruleForm"
@@ -30,8 +30,8 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <MyButtom bcColor="lightsalmon">取消</MyButtom>
-        <MyButtom bcColor="orange">确认</MyButtom>
+        <MyButtom bcColor="lightsalmon" @click.native="onClose">取消</MyButtom>
+        <MyButtom bcColor="orange" @click.native="onSave">确认</MyButtom>
       </el-form-item>
     </el-form>
   </my-dialog>
@@ -40,12 +40,14 @@
 <script>
 import MyDialog from "@/components/Dialog.vue";
 import MyButtom from "@/components/Button.vue";
+import { addAreaApi, getAreaIdApi, editAreaApi } from "@/api/area";
 export default {
   data() {
     return {
       ruleForm: {
         regionName: "",
         remark: "",
+        id: "",
       },
       rules: {
         regionName: [{ required: true, message: "不可为空", trigger: "blur" }],
@@ -59,9 +61,47 @@ export default {
       default: false,
     },
   },
+  computed: {
+    dialogTitle() {
+      // console.log(this.ruleForm.id);
+      return this.ruleForm.id ? "编辑部门" : "添加部门";
+    },
+  },
   methods: {
-    handleClose() {
-      this.$emit("close");
+    onClose() {
+      console.log(111);
+      this.$emit("update:visible", false);
+      this.$refs.ruleForm.resetFields();
+      this.ruleForm = {
+        regionName: "",
+        remark: "",
+      };
+    },
+
+    async onSave() {
+      try {
+        if (this.ruleForm.id) {
+          await editAreaApi(this.ruleForm);
+          this.$message.success("修改部门成功");
+          this.onClose();
+          this.$emit("addsuccess");
+        } else {
+          // await this.$refs.ruleForm.validate();
+          await addAreaApi(this.ruleForm);
+          this.$message.success("新增部门成功");
+          this.onClose();
+          this.$emit("addsuccess");
+        }
+      } catch (error) {
+        this.$message.error("操作部门失败");
+      }
+    },
+    async getAreaById(id) {
+      const res = await getAreaIdApi(id);
+      this.ruleForm.regionName = res.name;
+      this.ruleForm.remark = res.remark;
+      this.ruleForm.id = res.id;
+      console.log(this.ruleForm);
     },
   },
   components: {
