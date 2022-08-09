@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:11:13
+ * @LastEditTime: 2022-08-07 16:04:34
  */
 import axios from 'axios'
 import store from '@/store'
@@ -53,7 +53,7 @@ service.interceptors.request.use(async config => {
 
 // 响应拦截器
 service.interceptors.response.use((res) => {
-  console.log(res);
+  // console.log(res);
   if (res.config.url === '/api/user-service/user/login') {
     const { success, msg, token } = res.data
     if (success) return res.data

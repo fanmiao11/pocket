@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 10:05:58
  * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:05:59
+ * @LastEditTime: 2022-08-07 11:29:14
 -->
 <!--
  * @Descripttion:
@@ -28,47 +28,6 @@
       @search="searchBtn"></my-search>
 
       <!-- 结果列表 -->
-      <!-- <div class="result">
-        <div class="operation-btn">
-          <my-buttom bcColor="orange" icon="el-icon-circle-plus-outline"  @click.native="addOpreation = true">新建</my-buttom>
-          <my-buttom bcColor="lightsalmon">工单配置</my-buttom>
-        </div>
-
-        <div class="result-list">
-          <el-table :data="tableData" style="width: 100%" row-key="String" ref="table">
-            <el-table-column type="index" label="序号" ></el-table-column>
-            <el-table-column prop="taskCode" label="工单编号" >
-            </el-table-column>
-            <el-table-column prop="innerCode" label="设配编号">
-            </el-table-column>
-            <el-table-column prop="taskType.typeName" label="工单类型" > </el-table-column>
-            <el-table-column prop="createType" label="工单方式" :formatter="formatterType">
-            </el-table-column>
-            <el-table-column prop="taskStatusTypeEntity.statusName" label="工单状态">
-            </el-table-column>
-            <el-table-column prop="userName" label="运营人员"> </el-table-column>
-            <el-table-column prop="createTime" label="创建日期" :formatter="formatterDate"> </el-table-column>
-             <el-table-column
-      fixed="right"
-      label="操作"
-      prop="taskId"
-    >
-      <template >
-        <el-button type="text" @click="operationMoreMsgBtn()">详情查看</el-button>
-      </template>
-    </el-table-column>
-          </el-table> -->
-
-          <!-- 分页 -->
-          <!-- <el-pagination layout="slot" size="10" class="pagination">
-            <slot>
-              <span>共{{totalCount}}条记录 第{{pageIndex}}/{{totalPage}}页</span>
-            </slot>
-              <el-button class="pageBtn" @click="upPage" ref="upBtn">上一页</el-button>
-                <el-button class="pageBtn" @click="nextPage" ref="nextBtn">下一页</el-button>
-          </el-pagination>
-        </div>
-      </div> -->
 
       <result-list
       :tableData="tableData"
@@ -88,7 +47,7 @@
       <!-- 新增工单弹层 -->
       <addOpreation :addOpreation="addOpreation" @close="addOpreation=false" ></addOpreation>
       <!--  工单详情弹出层 -->
-      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false" :moreTask="moreTask"></operationMoreMsg>
+      <operationMoreMsg :operationMoreMsg="operationMoreMsg" @close="operationMoreMsg=false" :moreTask="moreTask" @refresh='searchBtn(null,1)'></operationMoreMsg>
     </div>
   </div>
 </template>
@@ -120,30 +79,35 @@ export default {
         {prop: 'createTime',label:'创建日期'}
       ],
       moreTask:{},//工单详情
-      operationArr:[ // 操作
+      operationArr:{
+        ope:[ // 操作
         {title: '查看详情', color: false},
       ]
+      }
     };
   },
   created(){
     this.operationSearch()
   },
   methods: {
-    searchBtn(taskCode,status) {
+   async searchBtn(taskCode,status) {
+    this.status = status
       this.operationSearch({taskCode,status})
     },
+    // 获取页面所有的数据
     async operationSearch(data){
        const res = await operationSearch(data)
-      //  console.log(res);
        this.pageIndex=res.pageIndex
        res.currentPageRecords.forEach((item,index) => item.itemIndex =(this.pageIndex -1) *10 + index + 1)
        this.tableData = res.currentPageRecords
+       console.log(this.tableData);
        this.totalPage=res.totalPage
        this.totalCount=res.totalCount
     },
     // 点击上一页
     upPage(){
       this.operationSearch({
+        status:this.status,
         pageIndex: --this.pageIndex,
         pageSize: 10,
         isRepair: false
@@ -151,8 +115,8 @@ export default {
     },
     // 点击下一页
     nextPage(){
-
        this.operationSearch({
+         status:this.status,
         pageIndex: ++this.pageIndex,
         pageSize: 10,
         isRepair: false
@@ -160,7 +124,7 @@ export default {
     },
     // 查看工单详情
     async operationMoreMsgBtn(row,val){
-        const res = await getMoreTask(row.taskId);
+      const res = await getMoreTask(row?.taskId);
        this.moreTask=res
        this.operationMoreMsg = true
 

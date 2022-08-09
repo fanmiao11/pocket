@@ -1,21 +1,3 @@
-<!--
- * @Descripttion:
- * @version:
- * @Author: suiyue
- * @email: 1373842098@qq.com
- * @Date: 2022-08-07 10:02:05
- * @LastEditors: sj
- * @LastEditTime: 2022-08-07 10:02:05
--->
-<!--
- * @Descripttion:
- * @version:
- * @Author: suiyue
- * @email: 1373842098@qq.com
- * @Date: 2022-08-05 23:06:21
- * @LastEditors: sj
- * @LastEditTime: 2022-08-07 09:52:21
--->
 <template>
   <div class="result">
     <!-- 表格上方按钮 -->
@@ -54,19 +36,32 @@
         ></el-table-column>
         <!-- 循环渲染列表主要内容 -->
         <el-table-column
+          v-for="(item, index) in tableArr"
           :prop="item.prop"
           :label="item.label"
-          v-for="(item, index) in tableArr"
           :key="index"
-          :formatter="formatter"
           :show-overflow-tooltip="true"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <!-- 如果是图片列表显示图片 -->
+            <template v-if="item.label === '商品图片'">
+              <img :src="scope.row.skuImage" />
+            </template>
+            <!-- 如果不是图片列表正常显示内容 -->
+            <template v-else >
+              <!-- <span v-html='formatter(scope.row,scope.column,scope.row[item.prop])'/> -->
+              <span v-html='formatter(scope.row,scope.column, scope.row[item.prop])'/>
+              <!-- {{ scope.row[item.prop] }} -->
+            </template>
+          </template>
+        </el-table-column>
         <!-- 操作列 -->
         <el-table-column
           fixed="right"
           label="操作"
           :width="length"
           prop="taskId"
+          v-if="isShowOpe"
         >
           <template slot-scope="scope">
             <el-button
@@ -123,12 +118,12 @@ export default {
     // 表头数据
     tableArr: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 需要渲染的表格数据
     tableData: {
       type: Array,
-      default: [],
+      // default: [],
     },
     // 是否显示多选框
     selection: {
@@ -139,6 +134,11 @@ export default {
     operation: {
       type: Object,
     },
+    // 是否显示操作框
+    isShowOpe:{
+      type:Boolean,
+      default:true,
+    }
   },
   components: {
     MyButtom,
@@ -146,14 +146,21 @@ export default {
   },
   methods: {
     formatter(row, column, cellValue) {
-      //  console.log(cellValue);
-      //  console.log(column);
-      if (column.label === "创建日期") {
-        return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
-      } else if (column.label === "工单方式") {
-        return row.createType ? "手动" : "自动";
-      } else {
-        return cellValue;
+      if(column.property.indexOf('.')===-1){
+        if (column.label === "创建日期") {
+            return dayjs(row.updateTime).format("YYYY.MM.DD HH:mm:ss");
+        } else if (column.label === "工单方式") {
+            return row.createType ? "手动" : "自动";
+        } else if(column.label === '商品价格'){
+          return Number(row.price/100)
+        }else {
+          return cellValue;
+        }
+      }else{
+        const str = column.property.split('.')
+        const one = str[0]
+        const two = str[1]
+        return row[one][two]
       }
     },
     handleClick(row, val) {
@@ -162,14 +169,13 @@ export default {
       this.$emit("operationBtn", row, val);
     },
   },
-  computed:{
-    length(){
-      return this.operation.length===4? 200:''
-    }
-  }
+  computed: {
+    length() {
+      return this.operation?.opeWidth ? this.operation.opeWidth : "";
+    },
+  },
 };
 </script>
-
 <style lang="scss" scoped>
 .color {
   color: red;
@@ -180,7 +186,6 @@ export default {
 .result {
   padding: 20px 15px 19px 17px;
   background-color: #fff;
-
   .operation-btn {
     margin-bottom: 20px;
   }
@@ -203,7 +208,6 @@ export default {
       font-size: 16px !important;
       color: #dbdfe5 !important;
     }
-
     .pageBtn {
       width: 70px;
       height: 32px;
