@@ -61,6 +61,7 @@
           label="操作"
           :width="length"
           prop="taskId"
+          v-if="isShowOpe"
         >
           <template slot-scope="scope">
             <el-button
@@ -133,6 +134,11 @@ export default {
     operation: {
       type: Object,
     },
+    // 是否显示操作框
+    isShowOpe:{
+      type:Boolean,
+      default:true,
+    }
   },
   components: {
     MyButtom,

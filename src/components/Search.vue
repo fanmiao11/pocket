@@ -63,6 +63,14 @@ export default {
   components: {
     MyButtom,
   },
+<<<<<<< HEAD
+  methods: {
+    searchBtn() {
+      this.$emit("search", this.taskCode, this.taskStatus);
+    },
+  },
+};
+=======
 
   methods:{
       searchBtn() {
@@ -70,6 +78,7 @@ export default {
     }
   }
 }
+>>>>>>> 463eb90ffee9c1e6442954fd042cc764800615fd
 </script>
 
 <style lang="scss" scoped>
