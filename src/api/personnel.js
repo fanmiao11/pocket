@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-07 10:40:03
  * @LastEditors: sj
- * @LastEditTime: 2022-08-08 18:11:09
+ * @LastEditTime: 2022-08-09 13:46:34
  */
 //  人员管理
 import request from '@/utils/request'
@@ -97,4 +97,27 @@ export const getUserWork = (params) => request({
 //获取用户基本信息
 export const getuserInfo = (id) => request({
   url: `/api/user-service/user/${id}`,
+})
+
+// 获取当时工单汇总信息(人员统计头部信息)
+export const getHeaderInfo = (start, end) => request({
+  url: `/api/task-service/task/taskReportInfo/${start}/${end}`,
+})
+
+// 人员排名
+/**
+ *
+ * @param {*} start
+ * @param {*} end
+ * @param {*} isRepair  true：运维工单;false：运营工单
+ * @param {*} regionId 地区ID
+ * @returns
+ */
+export const getToTen = (start, end, isRepair, regionId) => request({
+  url: `/api/task-service/task/userWorkTop10/${start}/${end}/${isRepair}/${regionId}`,
+})
+
+// 工单状态统计
+export const getCollectReport = (start, end) => request({
+  url: `/api/task-service/task/collectReport/${start}/${end}`,
 })
