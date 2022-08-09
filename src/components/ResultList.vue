@@ -164,7 +164,7 @@ export default {
       }
     },
     handleClick(row, val) {
-      console.log(row);
+      // console.log(row);
       // 点击哪个按钮就把 当前这一列的信息 和 按钮的内容 val 传到父组件通过接收到的值触发不同处理函数，
       this.$emit("operationBtn", row, val);
     },

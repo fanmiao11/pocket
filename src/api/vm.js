@@ -191,6 +191,12 @@ export const getPolicyList = () => {
   });
 };
 
+/**
+ * 应用策略
+ * @param {Array} innerCodeList
+ * @param {String} policyId
+ * @returns
+ */
 export const applyPolicy = (innerCodeList, policyId) => {
   return request({
     url: "/api/vm-service/vm/applyPolicy",
@@ -199,5 +205,18 @@ export const applyPolicy = (innerCodeList, policyId) => {
       innerCodeList,
       policyId,
     },
+  });
+};
+
+/**
+ * 修改售货机点位
+ * @param {String} id
+ * @param {String} nodeId
+ * @returns
+ */
+export const reviseNodeId = (id, nodeId) => {
+  return request({
+    url: "/api/vm-service/vm/" + id + "/" + nodeId,
+    method: "PUT",
   });
 };

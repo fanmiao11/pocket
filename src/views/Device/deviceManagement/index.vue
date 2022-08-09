@@ -24,6 +24,7 @@
         @clickAddBtn="clickAddBtn"
         @clickSecondBtn="policyListFn"
         @handleSelectionChange="handleSelectionChange"
+        @operationBtn="operationBtn"
         :operation="{
           opeWidth: '200',
           ope: [
@@ -76,15 +77,16 @@
 
     <!-- 批量操作 -->
     <d-dialog
-      dialogTitle="批量策略管理"
+      :dialogTitle="dialogTitle"
       :dialogVisible="policyDialog"
       @close="closePolicy"
     >
       <el-form
-        ref="form"
+        ref="policyForm"
         :model="policyForm"
         :rules="policyRules"
         label-width="140px"
+        v-loading="policyLoading"
       >
         <el-form-item label="选择策略：" prop="policy">
           <el-select v-model="policyForm.policy" clearable placeholder="请选择">
@@ -107,6 +109,14 @@
         >
       </div>
     </d-dialog>
+    <!-- 修改弹窗 -->
+    <revise-dialog
+      :show="reviseDialogShow"
+      @close="reviseClose"
+      :formData="rowData"
+      ref="oo"
+      :nodeArr="nodeArr"
+    ></revise-dialog>
   </div>
 </template>
 
@@ -115,6 +125,7 @@ import DSearch from "@/components/Search.vue";
 import ResultList from "@/components/ResultList.vue";
 import DDialog from "@/components/Dialog.vue";
 import MyButtom from "@/components/Button.vue";
+import ReviseDialog from "./components/reviseDialog.vue";
 import {
   getSearchList,
   addVm,
@@ -125,10 +136,11 @@ import {
 } from "@/api/vm";
 
 export default {
-  components: { DSearch, ResultList, DDialog, MyButtom },
+  components: { DSearch, ResultList, DDialog, MyButtom, ReviseDialog },
 
   data() {
     return {
+      policyLoading: false,
       searchParams: {}, // 搜索数据
       searchList: [], // table渲染列表（根据搜索获得）
       tableData: [], //table 渲染数据
@@ -169,6 +181,9 @@ export default {
       },
       // 多选框内容
       checkboxList: [],
+      dialogTitle: "批量策略管理",
+      reviseDialogShow: false, // 修改弹窗显隐
+      rowData: {},
     };
   },
 
@@ -239,7 +254,11 @@ export default {
         typeArr.push({ label: ele.name, value: ele.typeId });
       });
       this.typeArr = Array.from(new Set(typeArr));
-      // 获取所有点位
+      this.getNodeArr();
+    },
+    // 获取所有点位
+    async getNodeArr() {
+      this.nodeArr = [];
       const nodeArr = [];
       const { currentPageRecords } = await searchNode();
       currentPageRecords.forEach((ele) => {
@@ -274,17 +293,24 @@ export default {
     },
     // 批量操作
     async policyListFn() {
-      if(!this.checkboxList.length) return this.$message.warning('请勾选售货机')
+      this.dialogTitle = "批量策略管理";
+      if (!this.checkboxList.length)
+        return this.$message.warning("请勾选售货机");
       this.policyDialog = true;
       this.policyList = await getPolicyList();
     },
     // 关闭批量操作弹框
     closePolicy() {
       this.policyDialog = false;
+      this.$refs.policyForm.resetFields();
+      this.policyForm = {
+        policy: "",
+      };
     },
     // 多选框
     handleSelectionChange(vel) {
       // console.log(vel);
+      this.checkboxList = [];
       vel.forEach((ele) => {
         this.checkboxList.push(ele.innerCode);
       });
@@ -292,12 +318,35 @@ export default {
     // 更改策略
     async policyChange() {
       try {
-        const arr = await applyPolicy(
-          this.checkboxList,
-          this.policyForm.policy
-        );
-        console.log(arr);
-      } catch (error) {}
+        this.policyLoading = true;
+        await applyPolicy(this.checkboxList, this.policyForm.policy);
+        this.closePolicy();
+        this.policyLoading = false;
+        this.checkboxList = [];
+        // console.log(arr);
+      } catch (error) {
+        this.policyLoading = false;
+      }
+    },
+    // 点击操作
+    async operationBtn(row, vel) {
+      if (vel === "策略") {
+        this.checkboxList = [];
+        this.dialogTitle = "策略管理";
+        this.policyDialog = true;
+        this.checkboxList.push(row.innerCode);
+        this.policyList = await getPolicyList();
+      }
+      if (vel === "修改") {
+        this.reviseDialogShow = true;
+        this.rowData = row;
+        this.$refs.oo.form.nodeId = row.nodeId;
+        this.getNodeArr();
+        console.dir(row);
+      }
+    },
+    reviseClose() {
+      this.reviseDialogShow = false;
     },
   },
 };
