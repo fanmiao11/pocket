@@ -34,7 +34,6 @@
           <my-buttom bcColor="orange" icon="el-icon-circle-plus-outline"  @click.native="addOpreation = true">新建</my-buttom>
           <my-buttom bcColor="lightsalmon">工单配置</my-buttom>
         </div>
-
         <div class="result-list">
           <el-table :data="tableData" style="width: 100%" row-key="String" ref="table">
             <el-table-column type="index" label="序号" ></el-table-column>
@@ -155,10 +154,12 @@ export default {
         { prop: "createTime", label: "创建日期" },
       ],
       moreTask: {}, //工单详情
-      operationArr: [
+      operationArr: {
+        ope:[
         // 操作
         { title: "查看详情", color: false },
       ],
+      },
       status: "",
     };
   },
@@ -176,6 +177,7 @@ export default {
     async operationSearch(data) {
       this.loading = true;
       const res = await operationSearch({isRepair:true,...data});
+      console.log(res);
       this.pageIndex = res.pageIndex;
       res.currentPageRecords.forEach(
         (item, index) =>
@@ -237,7 +239,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss" scoped>
 .opeartion {
   .search {
@@ -251,11 +252,9 @@ export default {
       margin-bottom: 0;
     }
   }
-
   .result {
     padding: 20px 15px 19px 17px;
     background-color: #fff;
-
     .operation-btn {
       margin-bottom: 20px;
     }
@@ -278,7 +277,6 @@ export default {
         font-size: 16px !important;
         color: #dbdfe5 !important;
       }
-
       .pageBtn {
         width: 70px;
         height: 32px;
@@ -292,7 +290,6 @@ export default {
 .dialog-footer {
   position: relative;
   left: -200px;
-
   button:nth-of-type(1) {
     position: relative;
     left: -20px;
