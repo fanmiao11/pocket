@@ -49,21 +49,72 @@
     </result-list>
     <!-- 查看详情 -->
     <el-dialog
-      title="提示"
+      title="订单详情"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="50%"
       :before-close="handleClose"
     >
-      <span>这是一段信息</span>
-     <el-descriptions title="用户信息">
-    <el-descriptions-item label="用户名">kooriookami</el-descriptions-item>
-    <el-descriptions-item label="手机号">18100000000</el-descriptions-item>
-    <el-descriptions-item label="居住地">苏州市</el-descriptions-item>
-    <el-descriptions-item label="备注">
-      <el-tag size="small">学校</el-tag>
-    </el-descriptions-item>
-    <el-descriptions-item label="联系地址">江苏省苏州市吴中区吴中大道 1188 号</el-descriptions-item>
-</el-descriptions>
+      <!-- 出货状态 -->
+      <div class="task-status">
+        <!-- title A-->
+        <!--  出货成功 -->
+        <template v-if="currentDetail.status === '出货成功'">
+          <img src="../../assets/下载 (2).png" style="margin: 0 16px 0 22px" />
+          <span>{{ currentDetail.status }}</span>
+          <img src="../../assets/pic_4.3b5af41c.png" class="pic" />
+        </template>
+        <!--  支付完成 -->
+        <template v-else-if="currentDetail.status === '支付完成'">
+          <img src="../../assets/下载 (3).png" style="margin: 0 16px 0 22px" />
+          <span>{{ currentDetail.status }}</span>
+          <img src="../../assets/pic_1.834b274c.png" class="pic" />
+        </template>
+        <!--  创建和出货失败 -->
+        <template v-else>
+          <img src="../../assets/下载 (1).png" style="margin: 0 16px 0 22px" />
+          <span>{{ currentDetail.status }}</span>
+          <img src="../../assets/pic_3.e8208e34.png" class="pic" />
+        </template>
+        <!-- title S-->
+      </div>
+      <!-- 数据 -->
+      <el-form class="demo-form-inline">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="订单编号:">
+              <span>{{ currentDetail.orderNo }}</span>
+            </el-form-item>
+
+            <el-form-item label="设备编号:">
+              <span>{{ currentDetail.innerCode }}</span>
+            </el-form-item>
+
+            <el-form-item label="完成时间:">
+              <span>{{ currentDetail.updateTime }}</span>
+            </el-form-item>
+            <el-form-item label="设备地址:">
+              <span>{{ currentDetail.addr }}</span>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="商品名称:">
+              <span>{{ currentDetail.skuName }}</span>
+            </el-form-item>
+            <el-form-item label="订单金额:">
+              <span>{{ currentDetail.price }}</span>
+            </el-form-item>
+            <el-form-item label="创建时间:">
+              <span>{{ currentDetail.createTime }}</span>
+            </el-form-item>
+            <el-form-item label="支付方式:">
+              <span>{{
+                { 1: "支付宝支付", 2: "微信支付" }[currentDetail.payType]
+              }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-dialog>
   </div>
 </template>
@@ -105,6 +156,7 @@ export default {
         },
       },
       dialogVisible: false,
+      currentDetail: {},
     };
   },
   created() {
@@ -118,12 +170,13 @@ export default {
         endDate: this.formData.dateArr[1],
       });
     },
-    operationBtn() {
-      console.log(111111);
+    operationBtn(row) {
+      console.log(row);
       this.dialogVisible = true;
+      this.currentDetail = row;
     },
     handleClose(done) {
-      done()
+      done();
     },
     async getOrders(params) {
       const res = await getOrders(params);
@@ -173,4 +226,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.task-status {
+  display: flex;
+  align-items: center;
+  height: 54px;
+  margin-bottom: 25px;
+  background-color: hsla(0, 0%, 92.5%, 0.39);
+  .pic {
+    margin-right: 76px;
+    margin-bottom: 7px;
+  }
+  span {
+    flex: 1;
+  }
+}
+</style>
