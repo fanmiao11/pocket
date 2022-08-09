@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-07-30 20:09:42
  * @LastEditors: sj
- * @LastEditTime: 2022-08-09 09:26:27
+ * @LastEditTime: 2022-08-09 14:42:15
  */
 import Vue from 'vue'
 
@@ -25,6 +25,10 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 import * as directive from '@/Directives'
+
+import * as echarts from "echarts";
+Vue.prototype.$echarts = echarts;
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
