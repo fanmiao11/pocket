@@ -160,7 +160,7 @@ export default {
         const str = column.property.split('.')
         const one = str[0]
         const two = str[1]
-        return row[one][two]
+        return  row[one] ? row[one][two] : ''
       }
     },
     handleClick(row, val) {

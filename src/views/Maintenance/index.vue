@@ -154,10 +154,12 @@ export default {
         { prop: "createTime", label: "创建日期" },
       ],
       moreTask: {}, //工单详情
-      operationArr: [
+      operationArr: {
+        ope:[
         // 操作
         { title: "查看详情", color: false },
       ],
+      },
       status: "",
     };
   },
@@ -175,6 +177,7 @@ export default {
     async operationSearch(data) {
       this.loading = true;
       const res = await operationSearch({isRepair:true,...data});
+      console.log(res);
       this.pageIndex = res.pageIndex;
       res.currentPageRecords.forEach(
         (item, index) =>
