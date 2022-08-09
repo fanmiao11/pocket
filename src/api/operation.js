@@ -89,3 +89,29 @@ export const addWorkOrderApi = (data) =>
     method: "POST",
     data,
   });
+
+/**
+ * 获取工单阈值
+ * @param {number} data 
+ * @returns promise
+ */
+ export const getReplenishmentWarningApi = () =>
+ request({
+   url: `/api/task-service/task/supplyAlertValue`,
+   method: "GET",
+ });
+
+
+
+/**
+ * 设置自动补货工单阈值
+ * @param {number} data 
+ * @returns promise
+ */
+export const replenishmentWarningApi = (data) =>
+  request({
+    url: `/api/task-service/task/autoSupplyConfig`,
+    method: "POST",
+    data,
+  });
+
