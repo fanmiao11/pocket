@@ -28,7 +28,7 @@
         @upPage="upPage"
         @nextPage="nextPage"
         :operation="operationArr"
-        @clickAddBtn="addOpreation = true"
+        @clickAddBtn="AddBtn"
         @operationBtn="operationMoreMsgBtn"
       ></result-list>
 
@@ -66,7 +66,7 @@ export default {
         { prop: "region.name", label: "所在区域" },
         { prop: "businessType.name", label: "商圈类型" },
         { prop: "ownerName", label: "合作商" },
-        { prop: "itemaddr[3]", label: "详细地址" },
+        { prop: "itemaddr", label: "详细地址" },
       ],
       tableData: [],
       Details: [],
@@ -102,13 +102,19 @@ export default {
     });
   },
   methods: {
+    AddBtn() {
+      this.$refs.addDept.addbtn();
+      this.addOpreation = true;
+    },
     // 渲染
     async loadArea(data) {
       const res = await getAreaApi(data);
-      console.log(res);
+      // console.log(res);
       this.pageIndex = res.pageIndex;
       res.currentPageRecords.forEach((item, index) => {
-        item.itemaddr = item.addr.split("-");
+        const arr = item.addr.split("-");
+        item.itemaddr = arr[arr.length - 1];
+        // console.log(item.itemaddr);
         item.itemIndex = (this.pageIndex - 1) * 10 + index + 1;
       });
       this.tableData = res.currentPageRecords;
@@ -149,7 +155,8 @@ export default {
       }
       // 编辑
       else if (val === this.operationArr.ope[1].title) {
-        this.$refs.addDept.getAreaById(row.id);
+        console.log(row);
+        this.$refs.addDept.getAreaById(row);
         this.addOpreation = true;
       }
       // 删除

@@ -11,24 +11,85 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="区域名称" prop="regionName">
+      <el-form-item label="点位名称" prop="name">
         <el-input
-          v-model="ruleForm.regionName"
+          v-model="ruleForm.name"
           placeholder="请输入"
           maxlength="15"
           show-word-limit
         ></el-input>
       </el-form-item>
 
-      <el-form-item label="备注说明" prop="remark">
+      <el-form-item label="所在区域" prop="regionId">
+        <el-select
+          v-model="ruleForm.regionId"
+          placeholder="请选择"
+          size="large"
+          style="width: 490px"
+        >
+          <el-option
+            v-for="item in region"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="所属商圈" prop="businessId">
+        <el-select
+          v-model="ruleForm.businessId"
+          placeholder="请选择"
+          size="large"
+          style="width: 490px"
+        >
+          <el-option
+            v-for="item in business"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="归属合作商" prop="ownerId">
+        <el-select
+          v-model="ruleForm.ownerId"
+          placeholder="请选择"
+          size="large"
+          style="width: 490px"
+        >
+          <el-option
+            v-for="item in owner"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            size="large"
+            style="width: 490px"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="详细地址" prop="addr">
+        <el-cascader
+          size="large"
+          :options="options"
+          v-model="selectedOptions"
+          @change="handleChange"
+        >
+        </el-cascader>
         <el-input
           type="textarea"
-          v-model="ruleForm.remark"
+          v-model="ruleForm.addr"
           maxlength="40"
           show-word-limit
           placeholder="请输入备注(不超过40字)"
         ></el-input>
       </el-form-item>
+
       <el-form-item>
         <MyButtom bcColor="lightsalmon" @click.native="onClose">取消</MyButtom>
         <MyButtom bcColor="orange" @click.native="onSave">确认</MyButtom>
@@ -40,19 +101,60 @@
 <script>
 import MyDialog from "@/components/Dialog.vue";
 import MyButtom from "@/components/Button.vue";
-import { addAreaApi, getAreaIdApi, editAreaApi } from "@/api/area";
+import { regionData } from "element-china-area-data";
+import {
+  getregion,
+  getbusiness,
+  getowner,
+  addPointApi,
+  PutPointApi,
+} from "@/api/point";
 export default {
   data() {
     return {
       ruleForm: {
-        regionName: "",
-        remark: "",
+        name: "",
+        areaCode: "",
+        createUserId: "",
+        regionId: "",
+        businessId: "",
+        ownerId: "",
+        ownerName: "",
+        addr: "",
         id: "",
       },
       rules: {
-        regionName: [{ required: true, message: "不可为空", trigger: "blur" }],
-        remark: [{ required: true, message: "不可为空", trigger: "blur" }],
+        name: [{ required: true, message: "不可为空", trigger: "blur" }],
+        areaCode: [{ required: true, message: "不可为空", trigger: "blur" }],
+        createUserId: [
+          { required: true, message: "不可为空", trigger: "blur" },
+        ],
+        regionId: [{ required: true, message: "不可为空", trigger: "blur" }],
+        businessId: [{ required: true, message: "不可为空", trigger: "blur" }],
+        ownerId: [{ required: true, message: "不可为空", trigger: "blur" }],
+        ownerName: [{ required: true, message: "不可为空", trigger: "blur" }],
+        addr: [{ required: true, message: "不可为空", trigger: "blur" }],
       },
+      region: [
+        {
+          id: "",
+          name: "",
+        },
+      ],
+      business: [
+        {
+          id: "",
+          name: "",
+        },
+      ],
+      owner: [
+        {
+          id: "",
+          name: "",
+        },
+      ],
+      options: regionData,
+      selectedOptions: [],
     };
   },
   props: {
@@ -61,6 +163,7 @@ export default {
       default: false,
     },
   },
+  created() {},
   computed: {
     dialogTitle() {
       // console.log(this.ruleForm.id);
@@ -69,25 +172,40 @@ export default {
   },
   methods: {
     onClose() {
-      console.log(111);
+      //   console.log(111);
       this.$emit("update:visible", false);
       this.$refs.ruleForm.resetFields();
       this.ruleForm = {
-        regionName: "",
-        remark: "",
+        name: "",
+        areaCode: "",
+        createUserId: "1",
+        regionId: "",
+        businessId: "",
+        ownerId: "",
+        ownerName: "",
+        addr: "",
+        id: "",
       };
     },
 
     async onSave() {
       try {
         if (this.ruleForm.id) {
-          await editAreaApi(this.ruleForm);
+          console.log(this.ruleForm);
+          await PutPointApi(this.ruleForm);
           this.$message.success("修改部门成功");
           this.onClose();
           this.$emit("addsuccess");
         } else {
-          // await this.$refs.ruleForm.validate();
-          await addAreaApi(this.ruleForm);
+          this.owner.forEach((item) => {
+            // console.log(item);
+            if (this.ruleForm.ownerId === item.id) {
+              this.ruleForm.ownerName = item.name;
+            }
+          });
+          this.ruleForm.createUserId = 1;
+          console.log(this.ruleForm);
+          await addPointApi(this.ruleForm);
           this.$message.success("新增部门成功");
           this.onClose();
           this.$emit("addsuccess");
@@ -96,12 +214,29 @@ export default {
         this.$message.error("操作部门失败");
       }
     },
-    async getAreaById(id) {
-      const res = await getAreaIdApi(id);
-      this.ruleForm.regionName = res.name;
-      this.ruleForm.remark = res.remark;
-      this.ruleForm.id = res.id;
-      console.log(this.ruleForm);
+    async getAreaById(row) {
+      console.log(row);
+      this.addbtn();
+      this.ruleForm = row;
+      // const res = await getAreaApi(id);
+      // this.ruleForm.regionName = res.name;
+      // this.ruleForm.remark = res.remark;
+      // this.ruleForm.id = res.id;
+    },
+    handleChange(value) {
+      this.ruleForm.areaCode = value[2];
+      console.log(value);
+    },
+    async addbtn() {
+      const res = await getregion({
+        pageSize: "9999",
+      });
+      this.region = res.currentPageRecords;
+      this.business = await getbusiness();
+      const src = await getowner({
+        pageSize: "9999",
+      });
+      this.owner = src.currentPageRecords;
     },
   },
   components: {
