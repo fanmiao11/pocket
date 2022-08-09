@@ -1,3 +1,12 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
+ * @Date: 2022-08-09 09:04:27
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-09 14:25:10
+-->
 <template>
   <!-- 策略管理 -->
   <div class="app-main">
@@ -17,9 +26,11 @@
 </template>
 
 <script>
+import { getTacticalList } from '@/api/tactical'
 import MySearch from "@/components/Search.vue";
 import ResultList from "@/components/ResultList.vue";
 export default {
+  created(){},
   data() {
     return {
       tableArr: [
@@ -42,6 +53,10 @@ export default {
   methods: {
     searchBtn(val){},
     operationBtn() {},
+    async getTacticalList(){
+      const res = await getTacticalList()
+      console.log(res);
+    }
   },
   components: {
     MySearch,
