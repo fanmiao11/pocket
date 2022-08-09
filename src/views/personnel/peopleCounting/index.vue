@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-03 20:21:46
  * @LastEditors: sj
- * @LastEditTime: 2022-08-09 14:03:48
+ * @LastEditTime: 2022-08-09 14:46:50
 -->
 <template>
   <div class="app-main">
@@ -60,7 +60,7 @@
           <div class="date">
               <el-date-picker
                 class="time"
-                v-model="value1"
+                v-model="value"
                 type="daterange"
                 range-separator="~"
                 format="yyyy-MM-dd"
@@ -68,6 +68,7 @@
                 :start-placeholder="startTime"
                 :end-placeholder="endTime"
                 :pickerOptions="pickerOptions"
+                @change="chooseDate"
               >
               </el-date-picker>
             <div class="week-month-year">
@@ -83,8 +84,7 @@
             <img :src="emptyImg" alt="">
             <p>暂无数据</p>
           </div>
-
-          <div v-else>工单统计图</div>
+          <barEcharts ref="barEar" v-else :collectList="collectList" :data1="data1" :data2="data2" :data3="data3"/>
         </div>
       </el-col>
       <el-col class="box bom-right bom">
@@ -118,10 +118,11 @@
 import { getHeaderInfo,getAreaList,getToTen ,getCollectReport} from '@/api/personnel'
 import emptyImg from "@/assets/empty.87.png";
 import dayjs from "dayjs"
+import barEcharts from './components/echarts.vue'
 export default {
   data() {
     return {
-      value1:'',
+      value:'',
       startTime: dayjs(Date.now()).format("YYYY-MM-DD"),
       endTime: dayjs(Date.now()).format("YYYY-MM-DD"),
       emptyImg,
@@ -141,6 +142,10 @@ export default {
       roleCurrent: false, //  当前选择的是哪个角色 true：运维工单;false：运营工单
       isShowEmpty: false,
       isShowEmpty2: false,
+      collectList:[], // echarts 渲染的列表数据
+      data1:[],
+      data2:[],
+      data3:[],
     }
   },
   created(){
@@ -240,10 +245,28 @@ export default {
     async getCollectReport() {
       const res = await getCollectReport( this.startTime,
         this.endTime)
-       if(!res[0]){ this.isShowEmpty = true}
+        this.collectList=res
+       if(!this.collectList[0]){ this.isShowEmpty = true}
+       else{ this.isShowEmpty = false}
+    },
+    // 选择日期
+   async chooseDate(){
+    console.log(this.value);
+      this.startTime =this.value[0]
+      this.endTime = this.value[1]
+      await this.getCollectReport()
+      this.data1 = this.collectList.map(item => item.finishCount)
+      this.data2 = this.collectList.map(item => item.cancelCount)
+      this.data3 = this.collectList.map(item => dayjs(item.collectDate).format(`MM月DD日`))
+      console.log(this.collectList);
     }
+  },
+  components: {
+    barEcharts
   }
-};
+}
+
+
 </script>
 
 <style lang="scss" scoped>
