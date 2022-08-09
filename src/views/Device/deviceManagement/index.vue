@@ -74,8 +74,7 @@
         <my-buttom bcColor="orange" @click.native="addVm">确认</my-buttom>
       </div>
     </d-dialog>
-
-    <!-- 批量操作 -->
+    <!-- 批量操作弹框 -->
     <d-dialog
       :dialogTitle="dialogTitle"
       :dialogVisible="policyDialog"
@@ -109,14 +108,20 @@
         >
       </div>
     </d-dialog>
-    <!-- 修改弹窗 -->
+    <!-- 修改功能弹窗 -->
     <revise-dialog
       :show="reviseDialogShow"
-      @close="reviseClose"
+      @close="reviseDialogShow = false"
       :formData="rowData"
       ref="oo"
       :nodeArr="nodeArr"
     ></revise-dialog>
+    <!-- 货道弹框 -->
+    <channel-dialog
+      :show="channelDialogShow"
+      @close="channelDialogShow = false"
+      :formData="rowData"
+    ></channel-dialog>
   </div>
 </template>
 
@@ -126,6 +131,7 @@ import ResultList from "@/components/ResultList.vue";
 import DDialog from "@/components/Dialog.vue";
 import MyButtom from "@/components/Button.vue";
 import ReviseDialog from "./components/reviseDialog.vue";
+import ChannelDialog from "./components/channelDialog.vue";
 import {
   getSearchList,
   addVm,
@@ -136,7 +142,14 @@ import {
 } from "@/api/vm";
 
 export default {
-  components: { DSearch, ResultList, DDialog, MyButtom, ReviseDialog },
+  components: {
+    DSearch,
+    ResultList,
+    DDialog,
+    MyButtom,
+    ReviseDialog,
+    ChannelDialog,
+  },
 
   data() {
     return {
@@ -183,7 +196,8 @@ export default {
       checkboxList: [],
       dialogTitle: "批量策略管理",
       reviseDialogShow: false, // 修改弹窗显隐
-      rowData: {},
+      rowData: {}, // 表格单列数据（点击操作）
+      channelDialogShow: false,
     };
   },
 
@@ -344,9 +358,11 @@ export default {
         this.getNodeArr();
         console.dir(row);
       }
-    },
-    reviseClose() {
-      this.reviseDialogShow = false;
+      if (vel === "货道") {
+        this.channelDialogShow = true;
+        this.rowData = row;
+        console.log(row);
+      }
     },
   },
 };

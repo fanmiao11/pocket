@@ -220,3 +220,14 @@ export const reviseNodeId = (id, nodeId) => {
     method: "PUT",
   });
 };
+
+/**
+ * 获取售货机货道详情
+ * @param {String/Number} innerCode
+ * @returns
+ */
+export const channelDetails = (innerCode) => {
+  return request({
+    url: "/api/vm-service/channel/channelList/" + innerCode,
+  });
+};
