@@ -11,7 +11,8 @@
   <div class="app-main">
     <div class="opeartion">
       <!--  搜索栏 -->
-      <my-search nameOne="区域搜索"></my-search>
+      <my-search nameOne="区域搜索" @search="onsearch"></my-search>
+      <!-- 列表 -->
       <result-list
         :tableArr="tableArr"
         :tableData="tableData"
@@ -27,8 +28,10 @@
 
       <!-- 编辑工单弹层 -->
       <area-elastic
+        ref="addDept"
         :addOpreation="addOpreation"
-        @close="addOpreation = false"
+        :visible.sync="addOpreation"
+        @addsuccess="loadArea"
       ></area-elastic>
       <!-- 工单详情弹出层 -->
       <area-details
@@ -45,7 +48,7 @@
 import ResultList from "@/components/ResultList.vue";
 import MySearch from "@/components/Search.vue";
 import MyButtom from "@/components/Button.vue";
-import { getAreaApi, getAreaMoreApi } from "@/api/area";
+import { getAreaApi, getAreaMoreApi, delAreaApi } from "@/api/area";
 import areaElastic from "./components/areaElastic.vue";
 import areaDetails from "./components/areaDetails.vue";
 export default {
@@ -79,6 +82,7 @@ export default {
     this.loadArea();
   },
   methods: {
+    // 渲染
     async loadArea(data) {
       const res = await getAreaApi(data);
       console.log(res);
@@ -108,17 +112,50 @@ export default {
       });
     },
     async operationMoreMsgBtn(row, val) {
-      console.log(row, val);
+      // console.log(row, val);
+      // 查看详情
       if (val === this.operationArr.ope[0].title) {
         const res = await getAreaMoreApi(row.id);
         this.Details = res.currentPageRecords;
         this.Detailsname = row.name;
         this.getOpreation = true;
-        console.log(this.Details);
-      } else if (val === this.operationArr.ope[1].title) {
+        // console.log(this.Details);
+      }
+      // 编辑
+      else if (val === this.operationArr.ope[1].title) {
+        this.$refs.addDept.getAreaById(row.id);
         this.addOpreation = true;
-      } else if (val === this.operationArr.ope[2].title) {
-        console.log("删除");
+      }
+      // 删除
+      else if (val === this.operationArr.ope[2].title) {
+        try {
+          await this.$confirm("此操作将永久删除该部门, 是否继续?", "提示", {
+            confirmButtonText: "删除",
+            cancelButtonText: "取消",
+            type: "warning",
+          });
+          await delAreaApi(row.id);
+          this.$message.success("删除成功");
+          this.loadArea({
+            pageIndex: this.pageIndex,
+            pageSize: 10,
+            isRepair: false,
+          });
+        } catch (error) {}
+      }
+    },
+    onsearch(taskCode) {
+      if (taskCode) {
+        let arr = [];
+        this.tableData.forEach((item) => {
+          if (item.name.indexOf(taskCode) !== -1) {
+            arr.push(item);
+          }
+        });
+        console.log(arr);
+        this.tableData = arr;
+      } else {
+        this.loadArea();
       }
     },
   },
