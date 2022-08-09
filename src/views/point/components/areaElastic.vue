@@ -101,7 +101,7 @@
 <script>
 import MyDialog from "@/components/Dialog.vue";
 import MyButtom from "@/components/Button.vue";
-import { regionData } from "element-china-area-data";
+import { regionData, TextToCode } from "element-china-area-data";
 import {
   getregion,
   getbusiness,
@@ -175,6 +175,7 @@ export default {
       //   console.log(111);
       this.$emit("update:visible", false);
       this.$refs.ruleForm.resetFields();
+      this.selectedOptions = [];
       this.ruleForm = {
         name: "",
         areaCode: "",
@@ -218,14 +219,22 @@ export default {
       console.log(row);
       this.addbtn();
       this.ruleForm = row;
-      // const res = await getAreaApi(id);
-      // this.ruleForm.regionName = res.name;
-      // this.ruleForm.remark = res.remark;
-      // this.ruleForm.id = res.id;
+      const arr = row.addr.split("-");
+      this.ruleForm.addr = arr[arr.length - 1];
+      let str = [];
+      if (arr.length === 4) {
+        str.push(
+          TextToCode[arr[0]].code,
+          TextToCode[arr[0]][arr[1]].code,
+          TextToCode[arr[0]][arr[1]][arr[2]].code
+        );
+      } else if (arr.length === 3) {
+        str.push(TextToCode[arr[0]].code, TextToCode[arr[0]][arr[1]].code);
+      }
+      this.selectedOptions = str;
     },
     handleChange(value) {
       this.ruleForm.areaCode = value[2];
-      console.log(value);
     },
     async addbtn() {
       const res = await getregion({
