@@ -177,15 +177,18 @@ export default {
         } catch (error) {}
       }
     },
-    onsearch(taskCode) {
-      if (taskCode) {
+    onsearch(taskCode, taskStatus) {
+      if (taskCode || taskStatus) {
         let arr = [];
         this.tableData.forEach((item) => {
-          if (item.name.indexOf(taskCode) !== -1) {
+          if (
+            (item.name.indexOf(taskCode) ||
+              item.region.name.indexOf(this.optionArr[taskStatus - 1])) !== -1
+          ) {
             arr.push(item);
           }
         });
-        console.log(arr);
+
         this.tableData = arr;
       } else {
         this.loadArea();
