@@ -27,3 +27,24 @@ export function addAreaApi(data) {
     data,
   });
 }
+
+export function getAreaIdApi(id) {
+  return request({
+    url: "/api/vm-service/region/" + id,
+  });
+}
+
+export function editAreaApi(data) {
+  return request({
+    url: "/api/vm-service/region/" + data.id,
+    method: "PUT",
+    data,
+  });
+}
+
+export function delAreaApi(id) {
+  return request({
+    url: "/api/vm-service/region/" + id,
+    method: "DELETE",
+  });
+}

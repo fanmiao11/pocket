@@ -63,13 +63,12 @@ export default {
   components: {
     MyButtom,
   },
-
-  methods:{
-      searchBtn() {
-      this.$emit('search',this.taskCode,this.taskStatus)
-    }
-  }
-}
+  methods: {
+    searchBtn() {
+      this.$emit("search", this.taskCode, this.taskStatus);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
