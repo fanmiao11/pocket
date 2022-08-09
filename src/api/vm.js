@@ -143,9 +143,61 @@ export const changeVmType = (data) => {
   });
 };
 
+/**
+ * 售货机类型删除
+ * @param {String} data
+ * @returns
+ */
 export const delVmType = (data) => {
   return request({
     url: "/api/vm-service/vmType/" + data,
     method: "DELETE",
+  });
+};
+
+/**
+ * 新增售货机
+ * @param {Object} data
+ * @returns promise
+ */
+export const addVm = (data) =>
+  request({
+    url: "/api/vm-service/vm",
+    data,
+    method: "post",
+  });
+
+/**
+ * 点位搜索(用来获取所有点位)
+ * @returns
+ */
+export const searchNode = () => {
+  return request({
+    url: "/api/vm-service/node/search",
+    params: {
+      pageIndex: 1,
+      pageSize: 100000,
+    },
+  });
+};
+
+/**
+ * 策略列表
+ * @returns
+ */
+export const getPolicyList = () => {
+  return request({
+    url: "/api/vm-service/policy",
+  });
+};
+
+export const applyPolicy = (innerCodeList, policyId) => {
+  return request({
+    url: "/api/vm-service/vm/applyPolicy",
+    method: "put",
+    data: {
+      innerCodeList,
+      policyId,
+    },
   });
 };

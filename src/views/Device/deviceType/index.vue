@@ -393,7 +393,7 @@ export default {
     //关闭弹框
     closeDialog() {
       this.equipmentShow = false;
-      this.$refs.ruleForm.clearValidate();
+      this.$refs.ruleForm.resetFields();
       this.ruleForm = {
         name: "",
         model: "",

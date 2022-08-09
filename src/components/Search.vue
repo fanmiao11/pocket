@@ -52,8 +52,8 @@ export default {
     nameTwo: {
       type: String,
     },
-    optionArr:{
-      type:Array
+    optionArr: {
+      type: Array,
     },
     Two: {
       type: Boolean,
@@ -64,12 +64,12 @@ export default {
     MyButtom,
   },
 
-  methods:{
-      searchBtn() {
-      this.$emit('search',this.taskCode,this.taskStatus)
-    }
-  }
-}
+  methods: {
+    searchBtn() {
+      this.$emit("search", this.taskCode, this.taskStatus);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
