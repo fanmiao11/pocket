@@ -142,7 +142,6 @@ export default {
       item.expectCapacity=item.maxCapacity
       item.skuImage = item?.sku?.skuImage
     })
-  
       try {
         await this.$refs.ruleForm.validate()   
         let obj={
