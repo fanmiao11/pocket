@@ -356,12 +356,12 @@ export default {
         this.rowData = row;
         this.$refs.oo.form.nodeId = row.nodeId;
         this.getNodeArr();
-        console.dir(row);
+        // console.dir(row);
       }
       if (vel === "货道") {
         this.channelDialogShow = true;
         this.rowData = row;
-        console.log(row);
+        // console.log(row);
       }
     },
   },

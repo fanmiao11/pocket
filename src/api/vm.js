@@ -231,3 +231,14 @@ export const channelDetails = (innerCode) => {
     url: "/api/vm-service/channel/channelList/" + innerCode,
   });
 };
+
+/**
+ * 获取商圈下销量前10的商品(补货推荐)
+ * @param {String} businessId
+ * @returns
+ */
+export const getBusinessTop10 = (businessId) => {
+  return request({
+    url: "/api/vm-service/sku/businessTop10/" + businessId,
+  });
+};
