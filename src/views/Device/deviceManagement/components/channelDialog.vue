@@ -90,6 +90,7 @@ export default {
   created() {},
 
   methods: {
+    // 关闭弹框
     closePolicy() {
       this.$emit("close");
     },
@@ -143,7 +144,29 @@ export default {
       // console.log(this.goodsList);
     },
     // 删除
-    delGoods(id) {},
+    delGoods(id) {
+      this.goodsList = [];
+      this.cloneList.forEach((ele) => {
+        if (ele.channelCode === id) {
+          ele.sku = null;
+        }
+      });
+      const data1 = [];
+      const data2 = [];
+      this.cloneList.forEach((ele) => {
+        const last = ele.channelCode.charAt(ele.channelCode.length - 1);
+        if (last <= 5 && last > 0) {
+          data1.push(ele);
+        }
+        if ((last >= 6 && last < 10) || last == 0) {
+          data2.push(ele);
+        }
+      });
+      this.goodsList.push(data1);
+      if (data2.length) {
+        this.goodsList.push(data2);
+      }
+    },
   },
 
   props: {
@@ -167,6 +190,7 @@ export default {
     show: {
       async handler(newVel) {
         if (newVel) {
+          // console.log(this.formData);
           this.goodsList = [];
           const res = await channelDetails(this.formData.innerCode);
           // console.log(res);

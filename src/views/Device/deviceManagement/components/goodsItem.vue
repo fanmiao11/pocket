@@ -49,6 +49,7 @@ export default {
   computed: {
     flag() {
       let flag = true;
+      // console.log(this.goodsData.sku);
       if (this.goodsData.sku) {
         flag = false;
       } else {
