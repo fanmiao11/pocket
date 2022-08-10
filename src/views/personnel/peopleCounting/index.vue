@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-03 20:21:46
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 12:07:43
+ * @LastEditTime: 2022-08-10 16:08:50
 -->
 <template>
   <div class="app-main">
@@ -324,7 +324,7 @@ export default {
     width: 129px;
     height: 34px;
     background: rgba(233,243,255,.37);
-    border-radius: 10px
+    border-radius: 10px;
   }
   .date {
     display: flex;

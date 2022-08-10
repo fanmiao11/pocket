@@ -6,7 +6,7 @@
 <<<<<<< HEAD
  * @Date: 2022-08-09 21:27:00
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 00:21:50
+ * @LastEditTime: 2022-08-10 16:40:10
 -->
 
 <template>
@@ -38,6 +38,11 @@ export default {
   },
   mounted () {
     this.inOrigin()
+  },
+  watch:{
+    collectList(){
+      collectList.length && this.inOrigin()
+    }
   },
   methods: {
      // 工单状态柱形图
