@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-03 20:21:46
  * @LastEditors: sj
- * @LastEditTime: 2022-08-09 14:46:50
+ * @LastEditTime: 2022-08-10 11:55:17
 -->
 <template>
   <div class="app-main">
@@ -13,42 +13,18 @@
       <el-col class="topCom box top-left" style="margin-right: 20px">
         <div class="title">运营人员（当天）</div>
         <div class="body">
-          <div>
-            <span>{{headerInfo[0].total}}</span>
-            <span>工单总数（个）</span>
-          </div>
-          <div>
-            <span>{{headerInfo[0].completedTotal}}</span>
-            <span>完成工单（个）</span>
-          </div>
-          <div>
-            <span>{{headerInfo[0].cancelTotal}}</span>
-            <span>拒绝工单（个）</span>
-          </div>
-          <div>
-            <span>{{headerInfo[0].workerCount}}</span>
-            <span>运营人员数（个）</span>
+          <div v-for="(item, index) in headerList" :key="index">
+            <span>{{headerInfo[0][item.value]}}</span>
+            <span>{{item.name}}</span>
           </div>
         </div>
       </el-col>
       <el-col class="topCom box top-right">
         <div class="title">运维人员（当天）</div>
         <div class="body">
-          <div>
-            <span class="rightNumColor">{{headerInfo[1].total}}</span>
-            <span class="rightDesColor">工单总数（个）</span>
-          </div>
-          <div>
-            <span class="rightNumColor">{{headerInfo[1].completedTotal}}</span>
-            <span class="rightDesColor">完成工单（个）</span>
-          </div>
-          <div>
-            <span class="rightNumColor">{{headerInfo[1].cancelTotal}}</span>
-            <span class="rightDesColor">拒绝工单（个）</span>
-          </div>
-          <div>
-            <span class="rightNumColor">{{headerInfo[1].workerCount}}</span>
-            <span class="rightDesColor">运营人员数（个）</span>
+            <div v-for="(item, index) in headerList" :key="index">
+            <span class="rightNumColor">{{headerInfo[1][item.value]}}</span>
+            <span class="rightDesColor">{{item.name}}</span>
           </div>
         </div>
       </el-col>
@@ -72,9 +48,7 @@
               >
               </el-date-picker>
             <div class="week-month-year">
-               <div class="week item" @click="clickWeek" :class="{isChecked: weekCurrent}">周</div>
-               <div class="month item" @click="clickMonth" :class="{isChecked: monthCurrent}">月</div>
-               <div class="year item" @click="clickYear" :class="{isChecked: yearCurrent}">年</div>
+               <div class="item" @click="clickTime(item.time)" :class="{isChecked: currentTime ===item.time}" v-for="(item, index) in timeList" :key="index">{{item.value}}</div>
             </div>
           </div>
         </div>
@@ -97,8 +71,7 @@
 
         <div class="role-group">
            <div class="role-list">
-            <div class="role" :class="{isChecked: lCurrent}" @click="clickL">运营人员</div>
-            <div class="role" :class="{isChecked: rCurrent}" @click="clickR">运维人员</div>
+            <div class="role" :class="{isChecked: role === item}" @click="clickRole(item)" v-for="(item, index) in roleList" :key="index">{{item}}</div>
            </div>
         </div>
 
@@ -126,30 +99,39 @@ export default {
       startTime: dayjs(Date.now()).format("YYYY-MM-DD"),
       endTime: dayjs(Date.now()).format("YYYY-MM-DD"),
       emptyImg,
-      weekCurrent: true,
-      monthCurrent: false,
-      yearCurrent: false,
+      timeList: [
+        {time: 'week',value: '周'},
+        {time: 'month',value: '月'},
+        {time: 'year',value: '年'},
+      ],
+      currentTime: '',
+      roleList:['运营人员','运维人员'],
+      role:'运营人员',
+      roleCurrent: false, //  当前选择的是哪个角色 true：运维工单;false：运营工单
       headerInfo: [{},{}],
-      pickerOptions:{
+      pickerOptions:{  // 日期禁用
        disabledDate(data){
         return data > Date.now()
        }
       },
-      lCurrent: true, // 运营人员样式
-      rCurrent: false, // 运维人员样式
       area:'',
       areaList:[],
-      roleCurrent: false, //  当前选择的是哪个角色 true：运维工单;false：运营工单
       isShowEmpty: false,
       isShowEmpty2: false,
       collectList:[], // echarts 渲染的列表数据
       data1:[],
       data2:[],
       data3:[],
+      headerList:[
+        { name: '工单总数（个）', value: 'total'},
+        { name: '完成工单（个）', value: 'completedTotal'},
+        { name: '拒绝工单（个）', value: 'cancelTotal'},
+        { name: '运营人员数（个）', value: 'workerCount'},
+      ]
     }
   },
   created(){
-   this.clickWeek()
+   this.clickTime('week')
 
    this.getHeaderInfo(
     dayjs(Date.now()).format("YYYY-MM-DD 00:00:00"),
@@ -171,45 +153,15 @@ export default {
    )
   },
   methods:{
-    clickWeek(){
-       this.weekCurrent= true
-       this.monthCurrent=false
-       this.yearCurrent=false
-       this.startTime = dayjs().startOf('week').format(`YYYY-MM-DD`)
-       this.getCollectReport()
-
+    clickTime(time){
+      this.currentTime= time
+      this.startTime = dayjs().startOf(time).format(`YYYY-MM-DD`)
+      this.getCollectReport()
     },
-    clickMonth(){
-       this.weekCurrent= false
-       this.monthCurrent=true
-       this.yearCurrent=false
-       this.startTime = dayjs().startOf('month').format("YYYY-MM-DD")
-       this.getCollectReport()
-    },
-    clickYear(){
-       this.weekCurrent= false
-       this.monthCurrent=false
-       this.yearCurrent=true
-       this.startTime = dayjs().startOf('year').format("YYYY-MM-DD")
-        this.getCollectReport()
-    },
-    //点击运营人员
-    clickL(){
-      this.lCurrent = true
-      this.rCurrent = false
-      this.roleCurrent = false
-      this.getAreaList(
-     dayjs().startOf('month').format("YYYY-MM-DD"),
-     this.endTime,
-     this.roleCurrent,
-     this.area
-      )
-    },
-    //点击运维人员
-     clickR(){
-      this.lCurrent = false
-      this.rCurrent = true
-      this.roleCurrent = true
+    //点击运营人员/运维人员
+    clickRole(item){
+      this.role = item
+      this.roleCurrent = !this.roleCurrent
       this.getAreaList(
      dayjs().startOf('month').format("YYYY-MM-DD"),
      this.endTime,
@@ -258,7 +210,7 @@ export default {
       this.data1 = this.collectList.map(item => item.finishCount)
       this.data2 = this.collectList.map(item => item.cancelCount)
       this.data3 = this.collectList.map(item => dayjs(item.collectDate).format(`MM月DD日`))
-      console.log(this.collectList);
+      // console.log(this.collectList);
     }
   },
   components: {

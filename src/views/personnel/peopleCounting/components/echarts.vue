@@ -1,5 +1,14 @@
+<!--
+ * @Descripttion:
+ * @version:
+ * @Author: suiyue
+ * @email: 1373842098@qq.com
+ * @Date: 2022-08-10 10:54:47
+ * @LastEditors: sj
+ * @LastEditTime: 2022-08-10 10:55:05
+-->
 <template>
-    <div v-else class="bar" ref="bar" style="width: 100%; height:100%;">工单统计图</div>
+    <div class="bar" ref="bar" style="width: 100%; height:100%;">工单统计图</div>
 </template>
 
 <script>
