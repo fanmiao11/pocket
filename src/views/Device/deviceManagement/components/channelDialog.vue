@@ -45,7 +45,10 @@
           <el-scrollbar class="scrollbar">
             <div class="goods">
               <div v-for="item1 in item" :key="item1.channelCode">
-                <goods-item :goodsData="item1" @delGoods='delGoods'></goods-item>
+                <goods-item
+                  :goodsData="item1"
+                  @delGoods="delGoods"
+                ></goods-item>
               </div>
             </div>
           </el-scrollbar>
@@ -131,15 +134,16 @@ export default {
           data2.push(ele);
         }
       });
+      // console.log(data2);
       this.goodsList.push(data1);
-      if (!data.length) {
+      if (data2.length) {
         this.goodsList.push(data2);
+        // console.log('push2');
       }
+      // console.log(this.goodsList);
     },
     // 删除
-    delGoods(id){
-
-    }
+    delGoods(id) {},
   },
 
   props: {

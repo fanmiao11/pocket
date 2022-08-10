@@ -15,7 +15,9 @@
           :key="item.channelCode"
         ></top-item>
       </div>
-      <div class="btn"><el-button @click.native="adopt">采纳建议</el-button></div>
+      <div class="btn">
+        <el-button @click.native="adopt">采纳建议</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -47,9 +49,9 @@ export default {
   created() {},
 
   methods: {
-    adopt(){
-      this.$emit('adopt',this.goodsList)
-    }
+    adopt() {
+      this.$emit("adopt", this.goodsList);
+    },
   },
 
   watch: {
