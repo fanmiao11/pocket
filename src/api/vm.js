@@ -143,9 +143,102 @@ export const changeVmType = (data) => {
   });
 };
 
+/**
+ * 售货机类型删除
+ * @param {String} data
+ * @returns
+ */
 export const delVmType = (data) => {
   return request({
     url: "/api/vm-service/vmType/" + data,
     method: "DELETE",
+  });
+};
+
+/**
+ * 新增售货机
+ * @param {Object} data
+ * @returns promise
+ */
+export const addVm = (data) =>
+  request({
+    url: "/api/vm-service/vm",
+    data,
+    method: "post",
+  });
+
+/**
+ * 点位搜索(用来获取所有点位)
+ * @returns
+ */
+export const searchNode = () => {
+  return request({
+    url: "/api/vm-service/node/search",
+    params: {
+      pageIndex: 1,
+      pageSize: 100000,
+    },
+  });
+};
+
+/**
+ * 策略列表
+ * @returns
+ */
+export const getPolicyList = () => {
+  return request({
+    url: "/api/vm-service/policy",
+  });
+};
+
+/**
+ * 应用策略
+ * @param {Array} innerCodeList
+ * @param {String} policyId
+ * @returns
+ */
+export const applyPolicy = (innerCodeList, policyId) => {
+  return request({
+    url: "/api/vm-service/vm/applyPolicy",
+    method: "put",
+    data: {
+      innerCodeList,
+      policyId,
+    },
+  });
+};
+
+/**
+ * 修改售货机点位
+ * @param {String} id
+ * @param {String} nodeId
+ * @returns
+ */
+export const reviseNodeId = (id, nodeId) => {
+  return request({
+    url: "/api/vm-service/vm/" + id + "/" + nodeId,
+    method: "PUT",
+  });
+};
+
+/**
+ * 获取售货机货道详情
+ * @param {String/Number} innerCode
+ * @returns
+ */
+export const channelDetails = (innerCode) => {
+  return request({
+    url: "/api/vm-service/channel/channelList/" + innerCode,
+  });
+};
+
+/**
+ * 获取商圈下销量前10的商品(补货推荐)
+ * @param {String} businessId
+ * @returns
+ */
+export const getBusinessTop10 = (businessId) => {
+  return request({
+    url: "/api/vm-service/sku/businessTop10/" + businessId,
   });
 };
