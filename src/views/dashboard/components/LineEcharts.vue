@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-10 16:37:23
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 22:54:12
+ * @LastEditTime: 2022-08-10 23:47:00
 -->
 <template>
   <div ref="line" style="width: 100%; height: 100%"></div>
@@ -40,6 +40,12 @@ export default {
         title: {
           text: "销售额趋势图",
           left: "40%",
+        },
+        grid: {
+          top: '18%',
+          left: '20%',//原来是10%，修改为20%
+          right: '2%',
+          bottom: '24%',
         },
         xAxis:[
           {

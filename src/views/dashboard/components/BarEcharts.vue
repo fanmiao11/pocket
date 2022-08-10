@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-10 16:45:20
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 23:06:35
+ * @LastEditTime: 2022-08-10 23:47:33
 -->
 <template>
   <div ref="bar" style="width: 100%; height:100%;"></div>
@@ -41,6 +41,12 @@ export default {
          title: {
           text: "销售额分布",
           left: "40%",
+        },
+        grid: {
+          top: '18%',
+          left: '20%',//原来是10%，修改为20%
+          right: '2%',
+          bottom: '24%',
         },
           xAxis: [{
     type: 'category',

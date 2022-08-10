@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-10 12:03:17
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 23:02:33
+ * @LastEditTime: 2022-08-10 23:53:27
  */
 import request from "@/utils/request";
 
@@ -107,6 +107,6 @@ export function getregionCollect (start, end) {
  */
 export function getskuTop (topValue, start, end) {
   return request({
-    url: ` /api/order-service/report/skuTop/${topValue}/${start}/${end}`,
+    url: `/api/order-service/report/skuTop/${topValue}/${start}/${end}`,
   });
 }

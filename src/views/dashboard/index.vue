@@ -5,7 +5,7 @@
  * @email: 1373842098@qq.com
  * @Date: 2022-08-06 23:42:10
  * @LastEditors: sj
- * @LastEditTime: 2022-08-10 23:32:08
+ * @LastEditTime: 2022-08-11 00:08:54
 -->
 <template>
   <div class="app-main">
@@ -72,7 +72,7 @@
       <el-col class="business box">
         <div class="header">
           <MyTitle title="合作商点位数Top5" :time="false" />
-          <svg-icon icon-class="more" />
+          <svg-icon icon-class="more" @click="$router.push('/node/partner')"/>
         </div>
       </el-col>
       <el-col class="control box">
