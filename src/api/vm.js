@@ -242,3 +242,31 @@ export const getBusinessTop10 = (businessId) => {
     url: "/api/vm-service/sku/businessTop10/" + businessId,
   });
 };
+
+/**
+ * 货道配置
+ * @param {String} innerCode
+ * @param {Object} channelList
+ * @returns
+ */
+export const channelConfig = (innerCode, channelList) =>
+  request({
+    url: "/api/vm-service/channel/channelConfig",
+    method: "put",
+    data: {
+      innerCode,
+      channelList,
+    },
+  });
+
+/**
+ * 商品搜索
+ * @param {*} params
+ * @returns
+ */
+export const skuSearch = (params) => {
+  return request({
+    url: "/api/vm-service/sku/search",
+    params,
+  });
+};

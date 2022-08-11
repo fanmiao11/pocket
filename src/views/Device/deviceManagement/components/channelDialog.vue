@@ -45,7 +45,10 @@
           <el-scrollbar class="scrollbar">
             <div class="goods">
               <div v-for="item1 in item" :key="item1.channelCode">
-                <goods-item :goodsData="item1" @delGoods='delGoods'></goods-item>
+                <goods-item
+                  :goodsData="item1"
+                  @delGoods="delGoods"
+                ></goods-item>
               </div>
             </div>
           </el-scrollbar>
@@ -57,12 +60,15 @@
           <my-buttom bcColor="orange" @click.native="confirm">确认</my-buttom>
         </div>
       </div>
+      <!-- 智能排货弹框 -->
       <top-dialog
         :show="topShow"
         @closeTop="topShow = false"
         @adopt="adopt"
         :businessType="formData.node && formData.node.businessType"
       ></top-dialog>
+      <!-- 选择商品弹框 -->
+      <choose-dialog :List="cloneList" @submit="submit"></choose-dialog>
     </el-dialog>
   </div>
 </template>
@@ -70,9 +76,12 @@
 <script>
 import MyButtom from "@/components/Button.vue";
 import GoodsItem from "./goodsItem.vue";
-import TopDialog from "./topDialog";
-import { channelDetails } from "@/api/vm";
+import TopDialog from "./topDialog.vue";
+import chooseDialog from "./chooseDialog.vue";
+import { mapState } from "vuex";
+import { channelDetails, channelConfig } from "@/api/vm";
 export default {
+  name: "channelDialog",
   data() {
     return {
       goodsList: [], // 商品列表
@@ -81,12 +90,17 @@ export default {
       topShow: false, // 智能推荐弹框显隐
       cloneList: [], // 克隆商品列表
       none: true, // 控制左右箭头显隐
+      // chooseDialogShow: this.chooseDialog,
     };
   },
 
+  computed: {
+    ...mapState("vm", ["chooseDialog", "chooseGoodsList"]),
+  },
   created() {},
 
   methods: {
+    // 关闭弹框
     closePolicy() {
       this.$emit("close");
     },
@@ -114,7 +128,7 @@ export default {
       // 替换前十项数据
       for (let i = 0; i < 10; i++) {
         this.cloneList[i].skuId = list[i].skuId;
-        this.cloneList[i].skuId = {};
+        this.cloneList[i].sku = {};
         this.cloneList[i].sku = {
           skuImage: list[i].image,
           skuName: list[i].skuName,
@@ -131,15 +145,78 @@ export default {
           data2.push(ele);
         }
       });
+      // console.log(data2);
       this.goodsList.push(data1);
-      if (!data.length) {
+      if (data2.length) {
+        this.goodsList.push(data2);
+        // console.log('push2');
+      }
+      // console.log(this.goodsList);
+    },
+    // 删除
+    delGoods(id) {
+      this.goodsList = [];
+      this.cloneList.forEach((ele) => {
+        if (ele.channelCode === id) {
+          ele.skuId = "0";
+          ele.sku = null;
+        }
+      });
+      const data1 = [];
+      const data2 = [];
+      this.cloneList.forEach((ele) => {
+        const last = ele.channelCode.charAt(ele.channelCode.length - 1);
+        if (last <= 5 && last > 0) {
+          data1.push(ele);
+        }
+        if ((last >= 6 && last < 10) || last == 0) {
+          data2.push(ele);
+        }
+      });
+      this.goodsList.push(data1);
+      if (data2.length) {
         this.goodsList.push(data2);
       }
     },
-    // 删除
-    delGoods(id){
-
-    }
+    // 确认提交
+    async confirm() {
+      const channelList = [];
+      this.cloneList.forEach((ele) => {
+        channelList.push({ channelCode: ele.channelCode, skuId: ele.skuId });
+      });
+      // console.log(channelList);
+      const res = await channelConfig(this.formData.innerCode, channelList);
+      this.$emit("close");
+    },
+    // 更改单项
+    submit(channelCode) {
+      let obj = {};
+      this.chooseGoodsList.forEach((ele) => {
+        if (ele.icon === false) {
+          obj = ele;
+        }
+      });
+      this.goodsList[0].forEach((ele) => {
+        if (ele.channelCode === channelCode) {
+          ele.skuId = obj.skuId;
+          ele.sku = {};
+          ele.sku = {
+            skuImage: obj.skuImage,
+            skuName: obj.skuName,
+          };
+        }
+      });
+      this.goodsList[1].forEach((ele) => {
+        if (ele.channelCode === channelCode) {
+          ele.skuId = obj.skuId;
+          ele.sku = {};
+          ele.sku = {
+            skuImage: obj.skuImage,
+            skuName: obj.skuName,
+          };
+        }
+      });
+    },
   },
 
   props: {
@@ -157,12 +234,15 @@ export default {
     MyButtom,
     GoodsItem,
     TopDialog,
+    chooseDialog,
   },
 
   watch: {
     show: {
       async handler(newVel) {
         if (newVel) {
+          this.changeFlag = false;
+          // console.log(this.formData);
           this.goodsList = [];
           const res = await channelDetails(this.formData.innerCode);
           // console.log(res);
@@ -183,7 +263,6 @@ export default {
             this.goodsList.push(data2);
             this.none = false;
           }
-          console.log(this.goodsList);
         }
       },
     },

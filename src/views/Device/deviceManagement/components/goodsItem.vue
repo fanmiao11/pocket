@@ -3,7 +3,10 @@
     <div class="label">{{ goodsData && goodsData.channelCode }}</div>
     <div class="content">
       <img
-        :src="goodsData.sku && goodsData.sku.skuImage"
+        :src="
+          (goodsData.sku && goodsData.sku.skuImage) ||
+          (goodsData.sku && goodsData.sku.image)
+        "
         alt=""
         class="img"
         ref="img11"
@@ -12,7 +15,7 @@
         {{ !flag ? goodsData.sku && goodsData.sku.skuName : "暂无商品" }}
       </div>
     </div>
-    <el-button type="text">添加</el-button>
+    <el-button type="text" @click="addBtn">添加</el-button>
     <el-button
       type="text"
       class="delColor"
@@ -25,18 +28,44 @@
 </template>
 
 <script>
+import MySearch from "@/components/Search.vue";
+import { mapMutations, mapState, mapActions } from "vuex";
 export default {
   name: "goodsItem",
   data() {
-    return {};
+    return {
+      chooseGoodsShow: false, // 控制选择商品弹框显隐
+    };
   },
 
   created() {},
 
   methods: {
-    delGoods(id){
-      this.$emit('delGoods',id)
-    }
+    ...mapMutations("vm", [
+      "setChooseGoodsList",
+      "setChooseDialog",
+      "setReqObj",
+      "setChannelCode",
+    ]),
+    ...mapActions("vm", ["getSkuSearchList"]),
+    delGoods(id) {
+      this.$emit("delGoods", id);
+    },
+    addBtn() {
+      this.getSkuSearchList();
+      this.setChannelCode(this.goodsData.channelCode);
+      // this.setChooseDialog(true);
+      // const { currentPageRecords } = await skuSearch(this.reqObj);
+      // currentPageRecords.forEach((ele) => {
+      //   ele.icon = true;
+      // });
+      // this.setChooseGoodsList(currentPageRecords);
+    },
+    empty() {
+      this.goodsList.forEach((ele) => {
+        ele.icon = true;
+      });
+    },
   },
 
   props: {
@@ -46,9 +75,12 @@ export default {
     },
   },
 
+  components: { MySearch },
+
   computed: {
     flag() {
       let flag = true;
+      // console.log(this.goodsData.sku);
       if (this.goodsData.sku) {
         flag = false;
       } else {
@@ -56,6 +88,7 @@ export default {
       }
       return flag;
     },
+    ...mapState("vm", ["reqObj"]),
   },
 };
 </script>
@@ -91,17 +124,31 @@ export default {
     font-size: 12px;
     color: #fff;
   }
+
   .img {
     width: 84px;
     height: 78px;
     margin-bottom: 10px;
     object-fit: contain;
   }
+
   .delColor {
     color: #ff5a5a;
   }
+
   .disabled {
     color: #ffdada;
   }
+}
+::v-deep .el-dialog {
+  box-shadow: 0 0px 0px;
+  width: 858px;
+  border-radius: 10px;
+}
+.topGoods {
+  width: 750px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row wrap;
 }
 </style>
