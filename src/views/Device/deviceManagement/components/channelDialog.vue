@@ -60,6 +60,7 @@
           <my-buttom bcColor="orange" @click.native="confirm">确认</my-buttom>
         </div>
       </div>
+      <!-- 智能排货弹框 -->
       <top-dialog
         :show="topShow"
         @closeTop="topShow = false"
@@ -74,7 +75,7 @@
 import MyButtom from "@/components/Button.vue";
 import GoodsItem from "./goodsItem.vue";
 import TopDialog from "./topDialog";
-import { channelDetails } from "@/api/vm";
+import { channelDetails, channelConfig } from "@/api/vm";
 export default {
   data() {
     return {
@@ -118,7 +119,7 @@ export default {
       // 替换前十项数据
       for (let i = 0; i < 10; i++) {
         this.cloneList[i].skuId = list[i].skuId;
-        this.cloneList[i].skuId = {};
+        this.cloneList[i].sku = {};
         this.cloneList[i].sku = {
           skuImage: list[i].image,
           skuName: list[i].skuName,
@@ -148,6 +149,7 @@ export default {
       this.goodsList = [];
       this.cloneList.forEach((ele) => {
         if (ele.channelCode === id) {
+          ele.skuId = "0";
           ele.sku = null;
         }
       });
@@ -166,6 +168,17 @@ export default {
       if (data2.length) {
         this.goodsList.push(data2);
       }
+    },
+    // 确认提交
+    async confirm() {
+      const channelList = [];
+      this.cloneList.forEach((ele) => {
+        channelList.push({ channelCode: ele.channelCode, skuId: ele.skuId });
+      });
+      // console.log(channelList);
+      const res = await channelConfig(this.formData.innerCode, channelList);
+      console.log(res);
+      this.$emit("close");
     },
   },
 
@@ -190,6 +203,7 @@ export default {
     show: {
       async handler(newVel) {
         if (newVel) {
+          this.changeFlag = false;
           // console.log(this.formData);
           this.goodsList = [];
           const res = await channelDetails(this.formData.innerCode);

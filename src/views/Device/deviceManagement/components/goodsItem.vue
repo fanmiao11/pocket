@@ -21,6 +21,11 @@
       @click="delGoods(goodsData.channelCode)"
       >删除</el-button
     >
+    <el-dialog
+      title="选择商品"
+      :visible="chooseGoodsShow"
+      :append-to-body="true"
+    ></el-dialog>
   </div>
 </template>
 
@@ -28,15 +33,17 @@
 export default {
   name: "goodsItem",
   data() {
-    return {};
+    return {
+      chooseGoodsShow: false,// 控制选择商品弹框显隐
+    };
   },
 
   created() {},
 
   methods: {
-    delGoods(id){
-      this.$emit('delGoods',id)
-    }
+    delGoods(id) {
+      this.$emit("delGoods", id);
+    },
   },
 
   props: {
@@ -92,17 +99,23 @@ export default {
     font-size: 12px;
     color: #fff;
   }
+
   .img {
     width: 84px;
     height: 78px;
     margin-bottom: 10px;
     object-fit: contain;
   }
+
   .delColor {
     color: #ff5a5a;
   }
+
   .disabled {
     color: #ffdada;
   }
+}
+::v-deep .el-dialog {
+  box-shadow: 0 0px 0px;
 }
 </style>
