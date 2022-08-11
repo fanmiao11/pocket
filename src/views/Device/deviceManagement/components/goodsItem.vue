@@ -26,35 +26,35 @@
 
 <script>
 import MySearch from "@/components/Search.vue";
-import { mapMutations } from "vuex";
-import { skuSearch } from "@/api/vm";
+import { mapMutations, mapState, mapActions } from "vuex";
 export default {
   name: "goodsItem",
   data() {
     return {
       chooseGoodsShow: false, // 控制选择商品弹框显隐
-      reqObj: {
-        pageIndex: 1,
-        pageSize: 10,
-        skuName: "",
-      },
     };
   },
 
   created() {},
 
   methods: {
-    ...mapMutations("vm", ["setChooseGoodsList", "setChooseDialog"]),
+    ...mapMutations("vm", [
+      "setChooseGoodsList",
+      "setChooseDialog",
+      "setReqObj",
+    ]),
+    ...mapActions("vm", ["getSkuSearchList"]),
     delGoods(id) {
       this.$emit("delGoods", id);
     },
-    async addBtn() {
-      this.setChooseDialog(true);
-      const { currentPageRecords } = await skuSearch(this.reqObj);
-      currentPageRecords.forEach((ele) => {
-        ele.icon = true;
-      });
-      this.setChooseGoodsList(currentPageRecords);
+    addBtn() {
+      this.getSkuSearchList();
+      // this.setChooseDialog(true);
+      // const { currentPageRecords } = await skuSearch(this.reqObj);
+      // currentPageRecords.forEach((ele) => {
+      //   ele.icon = true;
+      // });
+      // this.setChooseGoodsList(currentPageRecords);
     },
     empty() {
       this.goodsList.forEach((ele) => {
@@ -83,6 +83,7 @@ export default {
       }
       return flag;
     },
+    ...mapState("vm", ["reqObj"]),
   },
 };
 </script>

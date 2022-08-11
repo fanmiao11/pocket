@@ -10,16 +10,18 @@
       <svg-icon
         iconClass="arrow-left"
         class="svgLeft"
-        :class="{ forbid: !changeFlag, none: none }"
         @click="leftClick"
+        :class="{ forbid: leftFlag }"
       ></svg-icon>
+
       <!-- 右箭头 -->
       <svg-icon
         iconClass="arrow-right"
         class="svgRight"
-        :class="{ forbid: changeFlag, none: none }"
         @click="rightClick"
+        :class="{ forbid: rightFlag }"
       ></svg-icon>
+
       <my-search nameOne="商品名称"></my-search>
       <div class="topGoods">
         <top-item
@@ -31,14 +33,14 @@
         ></top-item>
       </div>
       <div class="btn">
-        <el-button @click.native="adopt">采纳建议</el-button>
+        <el-button @click.native="adopt">确认</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import MySearch from "@/components/Search.vue";
 import TopItem from "./topItem.vue";
 export default {
@@ -50,7 +52,13 @@ export default {
   created() {},
 
   methods: {
-    ...mapMutations("vm", ["setChooseGoodsList", "setChooseDialog"]),
+    ...mapMutations("vm", [
+      "setChooseGoodsList",
+      "setChooseDialog",
+      "setReqObj",
+    ]),
+    ...mapActions("vm", ["getSkuSearchList"]),
+    // 清除所有选中图标
     empty() {
       const arr = this.chooseGoodsList;
       arr.forEach((ele) => {
@@ -58,10 +66,39 @@ export default {
       });
       this.setChooseGoodsList(arr);
     },
+    leftClick() {
+      const obj = this.reqObj;
+      if (this.reqObj.pageIndex > 1) {
+        obj.pageIndex--;
+        this.getSkuSearchList();
+      }
+    },
+    rightClick() {
+      const obj = this.reqObj;
+      if (this.total.totalPage > this.reqObj.pageIndex) {
+        obj.pageIndex++;
+        this.getSkuSearchList();
+      }
+      //   this.setReqObj()
+    },
   },
 
   computed: {
-    ...mapState("vm", ["chooseDialog", "chooseGoodsList"]),
+    ...mapState("vm", ["chooseDialog", "chooseGoodsList", "reqObj", "total"]),
+    leftFlag() {
+      let flag = false;
+      if (this.reqObj.pageIndex == 1) {
+        flag = true;
+      }
+      return flag;
+    },
+    rightFlag() {
+      let flag = false;
+      if (this.reqObj.pageIndex == this.total.totalPage) {
+        flag = true;
+      }
+      return flag;
+    },
   },
 };
 </script>
