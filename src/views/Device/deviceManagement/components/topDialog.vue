@@ -80,7 +80,6 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-flow: row wrap;
-  // justify-content: center;
 }
 .btn {
   width: 100%;

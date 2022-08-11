@@ -12,7 +12,7 @@
         {{ !flag ? goodsData.sku && goodsData.sku.skuName : "暂无商品" }}
       </div>
     </div>
-    <el-button type="text">添加</el-button>
+    <el-button type="text" @click="addBtn">添加</el-button>
     <el-button
       type="text"
       class="delColor"
@@ -21,28 +21,45 @@
       @click="delGoods(goodsData.channelCode)"
       >删除</el-button
     >
-    <el-dialog
-      title="选择商品"
-      :visible="chooseGoodsShow"
-      :append-to-body="true"
-    ></el-dialog>
   </div>
 </template>
 
 <script>
+import MySearch from "@/components/Search.vue";
+import { mapMutations } from "vuex";
+import { skuSearch } from "@/api/vm";
 export default {
   name: "goodsItem",
   data() {
     return {
-      chooseGoodsShow: false,// 控制选择商品弹框显隐
+      chooseGoodsShow: false, // 控制选择商品弹框显隐
+      reqObj: {
+        pageIndex: 1,
+        pageSize: 10,
+        skuName: "",
+      },
     };
   },
 
   created() {},
 
   methods: {
+    ...mapMutations("vm", ["setChooseGoodsList", "setChooseDialog"]),
     delGoods(id) {
       this.$emit("delGoods", id);
+    },
+    async addBtn() {
+      this.setChooseDialog(true);
+      const { currentPageRecords } = await skuSearch(this.reqObj);
+      currentPageRecords.forEach((ele) => {
+        ele.icon = true;
+      });
+      this.setChooseGoodsList(currentPageRecords);
+    },
+    empty() {
+      this.goodsList.forEach((ele) => {
+        ele.icon = true;
+      });
     },
   },
 
@@ -52,6 +69,8 @@ export default {
       required: true,
     },
   },
+
+  components: { MySearch },
 
   computed: {
     flag() {
@@ -117,5 +136,13 @@ export default {
 }
 ::v-deep .el-dialog {
   box-shadow: 0 0px 0px;
+  width: 858px;
+  border-radius: 10px;
+}
+.topGoods {
+  width: 750px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row wrap;
 }
 </style>

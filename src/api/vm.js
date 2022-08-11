@@ -258,3 +258,15 @@ export const channelConfig = (innerCode, channelList) =>
       channelList,
     },
   });
+
+/**
+ * 商品搜索
+ * @param {*} params
+ * @returns
+ */
+export const skuSearch = (params) => {
+  return request({
+    url: "/api/vm-service/sku/search",
+    params,
+  });
+};

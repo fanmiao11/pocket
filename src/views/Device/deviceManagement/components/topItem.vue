@@ -1,6 +1,12 @@
 <template>
-  <div class="topItem">
-    <img :src="topData.image" alt="" />
+  <div class="topItem" @click="choose">
+    <img
+      src="~@/assets/choose.png"
+      alt=""
+      class="choose"
+      :class="{ none: topData.icon }"
+    />
+    <img :src="topData.image || topData.skuImage" alt="" />
     <p>{{ topData.skuName }}</p>
   </div>
 </template>
@@ -13,11 +19,22 @@ export default {
 
   created() {},
 
-  methods: {},
+  methods: {
+    choose() {
+      if (this.chooseShow) {
+        this.$emit("empty");
+        this.topData.icon = false;
+      }
+    },
+  },
   props: {
     topData: {
       type: Object,
-      required: true,
+      required: false,
+    },
+    chooseShow: {
+      type: Boolean,
+      default: false,
     },
   },
 };
@@ -36,6 +53,17 @@ export default {
   text-align: center;
   margin-left: 8px;
   margin-right: 8px;
+  position: relative;
+  .choose {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+  }
+  .none {
+    display: none;
+  }
 }
 img {
   width: 84px;

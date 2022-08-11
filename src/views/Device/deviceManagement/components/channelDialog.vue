@@ -67,6 +67,8 @@
         @adopt="adopt"
         :businessType="formData.node && formData.node.businessType"
       ></top-dialog>
+      <!-- 选择商品弹框 -->
+      <choose-dialog></choose-dialog>
     </el-dialog>
   </div>
 </template>
@@ -74,9 +76,12 @@
 <script>
 import MyButtom from "@/components/Button.vue";
 import GoodsItem from "./goodsItem.vue";
-import TopDialog from "./topDialog";
+import TopDialog from "./topDialog.vue";
+import chooseDialog from "./chooseDialog.vue";
+import { mapState } from "vuex";
 import { channelDetails, channelConfig } from "@/api/vm";
 export default {
+  name: "channelDialog",
   data() {
     return {
       goodsList: [], // 商品列表
@@ -85,9 +90,13 @@ export default {
       topShow: false, // 智能推荐弹框显隐
       cloneList: [], // 克隆商品列表
       none: true, // 控制左右箭头显隐
+      // chooseDialogShow: this.chooseDialog,
     };
   },
 
+  computed: {
+    ...mapState("vm", ["chooseDialog", "chooseGoodsList"]),
+  },
   created() {},
 
   methods: {
@@ -197,6 +206,7 @@ export default {
     MyButtom,
     GoodsItem,
     TopDialog,
+    chooseDialog,
   },
 
   watch: {
