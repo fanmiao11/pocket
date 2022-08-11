@@ -22,7 +22,7 @@
         :class="{ forbid: rightFlag }"
       ></svg-icon>
 
-      <my-search nameOne="商品名称"></my-search>
+      <my-search nameOne="商品名称" @search="searchFn"></my-search>
       <div class="topGoods">
         <top-item
           :topData="item"
@@ -33,7 +33,12 @@
         ></top-item>
       </div>
       <div class="btn">
-        <el-button @click.native="adopt">确认</el-button>
+        <el-button
+          @click.native="submit"
+          :disabled="confirm"
+          :class="{ disabled: confirm }"
+          >确认</el-button
+        >
       </div>
     </el-dialog>
   </div>
@@ -81,10 +86,25 @@ export default {
       }
       //   this.setReqObj()
     },
+    // 搜索
+    searchFn(val) {
+      this.reqObj.skuName = val;
+      this.getSkuSearchList();
+    },
+    submit() {
+      this.$emit("submit", this.channelCode);
+      this.setChooseDialog(false);
+    },
   },
 
   computed: {
-    ...mapState("vm", ["chooseDialog", "chooseGoodsList", "reqObj", "total"]),
+    ...mapState("vm", [
+      "chooseDialog",
+      "chooseGoodsList",
+      "reqObj",
+      "total",
+      "channelCode",
+    ]),
     leftFlag() {
       let flag = false;
       if (this.reqObj.pageIndex == 1) {
@@ -99,6 +119,16 @@ export default {
       }
       return flag;
     },
+    // 确认按钮
+    confirm() {
+      let flag = true;
+      this.chooseGoodsList.forEach((ele) => {
+        if (ele.icon === false) {
+          flag = false;
+        }
+      });
+      return flag;
+    },
   },
 };
 </script>
@@ -109,7 +139,7 @@ export default {
   text-align: center;
   .el-button {
     // margin: 0 auto;
-    background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
+    background: linear-gradient(135deg, #ff9743, #ff5e20);
     width: 80px !important;
     height: 36px;
     padding: 0;
@@ -151,5 +181,9 @@ export default {
   box-shadow: 0 0px 0px;
   width: 858px;
   border-radius: 10px;
+}
+.disabled {
+  background: linear-gradient(135deg, #ff9743, #ff5e20) !important;
+  opacity: 0.3;
 }
 </style>

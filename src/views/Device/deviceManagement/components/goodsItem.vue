@@ -3,7 +3,10 @@
     <div class="label">{{ goodsData && goodsData.channelCode }}</div>
     <div class="content">
       <img
-        :src="goodsData.sku && goodsData.sku.skuImage"
+        :src="
+          (goodsData.sku && goodsData.sku.skuImage) ||
+          (goodsData.sku && goodsData.sku.image)
+        "
         alt=""
         class="img"
         ref="img11"
@@ -42,6 +45,7 @@ export default {
       "setChooseGoodsList",
       "setChooseDialog",
       "setReqObj",
+      "setChannelCode",
     ]),
     ...mapActions("vm", ["getSkuSearchList"]),
     delGoods(id) {
@@ -49,6 +53,7 @@ export default {
     },
     addBtn() {
       this.getSkuSearchList();
+      this.setChannelCode(this.goodsData.channelCode);
       // this.setChooseDialog(true);
       // const { currentPageRecords } = await skuSearch(this.reqObj);
       // currentPageRecords.forEach((ele) => {

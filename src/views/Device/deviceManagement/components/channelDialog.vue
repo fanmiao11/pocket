@@ -68,7 +68,7 @@
         :businessType="formData.node && formData.node.businessType"
       ></top-dialog>
       <!-- 选择商品弹框 -->
-      <choose-dialog></choose-dialog>
+      <choose-dialog :List="cloneList" @submit="submit"></choose-dialog>
     </el-dialog>
   </div>
 </template>
@@ -186,8 +186,36 @@ export default {
       });
       // console.log(channelList);
       const res = await channelConfig(this.formData.innerCode, channelList);
-      console.log(res);
       this.$emit("close");
+    },
+    // 更改单项
+    submit(channelCode) {
+      let obj = {};
+      this.chooseGoodsList.forEach((ele) => {
+        if (ele.icon === false) {
+          obj = ele;
+        }
+      });
+      this.goodsList[0].forEach((ele) => {
+        if (ele.channelCode === channelCode) {
+          ele.skuId = obj.skuId;
+          ele.sku = {};
+          ele.sku = {
+            skuImage: obj.skuImage,
+            skuName: obj.skuName,
+          };
+        }
+      });
+      this.goodsList[1].forEach((ele) => {
+        if (ele.channelCode === channelCode) {
+          ele.skuId = obj.skuId;
+          ele.sku = {};
+          ele.sku = {
+            skuImage: obj.skuImage,
+            skuName: obj.skuName,
+          };
+        }
+      });
     },
   },
 
@@ -235,7 +263,6 @@ export default {
             this.goodsList.push(data2);
             this.none = false;
           }
-          console.log(this.goodsList);
         }
       },
     },

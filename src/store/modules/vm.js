@@ -10,6 +10,7 @@ export default {
       totalPage: "", // 页数
       totalCount: "", // 总个数
     },
+    channelCode:'' //通道号
   },
   mutations: {
     setChooseGoodsList(state, payload) {
@@ -24,6 +25,9 @@ export default {
     setTotal(state, payload) {
       state.total = payload;
     },
+    setChannelCode(state, payload) {
+        state.channelCode = payload;
+      },
   },
   actions: {
     async getSkuSearchList({ commit, state }, payload) {
